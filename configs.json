@@ -1,0 +1,28 @@
+{
+	"data_agnostic_configs": {
+		"dataset": "mnist",
+		"learning_rate": 0.001,
+		"momentum": 0.9,
+		"weight_decay": 0.0001,
+		"number_iterations": 300,
+		"number_restarts": 2
+	},
+	"xray": {
+		"network_path": "network/",
+		"data_dir": "data/tomo/xray1_crop_512.jpg",
+		"img_size": 256,
+		"num_channels": 1,
+		"num_measurements": 1000,
+		"z_dim": 32
+	},
+	"mnist": {
+		"network_path": "network/",
+		"data_dir": "data/mnist/img_1.jpg",
+		"img_size": 28,
+		"num_channels": 1,
+		"num_measurements": 100,
+		"z_dim": 128
+	}
+
+
+}

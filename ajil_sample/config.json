@@ -1,0 +1,70 @@
+{
+    "celebA": {
+	"generator_path": "data/CelebA_gen/checkpoint-100000",
+	"classifier_path": "data/CelebA_classifier/model-999",
+	"robust_classifier_path": "data/CelebA_classifier_robust/",
+	"data_dir": "data/CelebA_train",
+	"z_dim": 100,
+	"inversion_iters": 5000,
+	"num_classes": 2,
+	"img_shape": [64, 64, 3],
+	"total_shape": 12288,
+	"gan_variance": 1.0,
+  "gan_mu": -1.0
+    },
+    "mnist": {
+	"generator_path": "data/MNIST_gen/mnist_gan.ckpt",
+	"classifier_path": "data/MNIST_classifier/model.ckpt-99",
+	"robust_classifier_path": "data/MNIST_classifier_robust/",
+	"z_dim": 32,
+	"inversion_iters": 1000,
+	"num_classes": 10,
+	"data_dir": "",
+	"img_shape": [28, 28, 1],
+	"total_shape": 784,
+	"gan_variance": 1.0,
+  "gan_mu": 0.0
+    },
+    "cifar": {
+	"generator_path": "data/cifar10_gen/model-200000.ckpt",
+	"classifier_path": "data/cifar10_classifier/",
+	"robust_classifier_path": "",
+	"z_dim": 128,
+	"inversion_iters": 20000,
+	"num_classes": 10,
+	"data_dir": "data/cifar10_train",
+	"img_shape": [32, 32, 3],
+	"total_shape": 1728,
+	"gan_variance": 1.0,
+  "gan_mu": 0.0
+    },
+    "train": {
+	"adv_train": true,
+	"batch_size": 50,
+	"dataset": "celebA",
+	"adv_iters": 20,
+	"iters_per_adv": 500,
+	"adv_train_eps": 0.005,
+	"adv_thresh": 1.0,
+	"max_iters": 100000,
+	"log_iters": 100,
+	"save_iters": 100,
+	"max_admissible_l2": 0.005,
+	"lambda_lr": 10.0,
+	"lambda_init": 250.0
+  },
+  "attacks": {
+	"dataset": "celebA",
+	"lambda_lr": 1.0,
+	"lambda_init": 250.0,
+	"attack_name": "latent_op",
+	"adv_iters": 100000,
+	"epsilon": 0.01,
+	"adv_thresh": 0.9,
+	"early_stop": true,
+	"batch_size": 50,
+	"max_admissible_l2": 0.005,
+	"pgd_lr": 1.0,
+	"pgd_steps": 5000
+    }
+}
