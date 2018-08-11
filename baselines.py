@@ -70,7 +70,7 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
         for i in range(A_val.shape[1]):
             A_wav[:, i] = vec([db4(channel)[0] for channel in devec(A_new[:, i])])
         x_hat_batch = []
-        for j in range(batch_size):
+        for j in range(args.BATCH_SIZE):
             y_val = y_batch_val[j]
             z_hat = solve_lasso(A_wav, y_val, args.LMBD)
             x_hat = vec([idb4(channel,coeff_slices) for channel in devec(z_hat)]).T
