@@ -8,7 +8,7 @@ from torchvision import datasets
 
 import cs_dip as csd
 import utils
-
+import baselines
 
 args = parser.parse_args('configs.json')
 DATASET = args.dataset
@@ -44,6 +44,17 @@ MSE = dict()
 MEASUREMENT_LOSS = dict()
 
 for basis in BASIS: # DO WE NEED THIS?
+    '''
+    A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, num_measurements)
+    y = np.dot(x,A)
+    if basis == 'dct':
+        estimator = baselines.lasso_dct_estimator(args)
+    elif basis == 'wavelet':
+        estimator = baselines.lasso_wavelet_estimator(args)
+    else:
+        raise NotImplementedError
+    x_hat = estimator(A,y,args)
+    '''
     for num_measurements in NUM_MEASUREMENTS_LIST: #NEED TO ADD LIST FUNCTIONALITY LATER
         print('Number of measurements: ' + str(num_measurements))
         # check if the pickle files already exist. if they do, update the respective
