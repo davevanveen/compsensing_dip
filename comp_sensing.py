@@ -11,6 +11,7 @@ import utils
 import baselines
 
 args = parser.parse_args('configs.json')
+print(args)
 DATASET = args.dataset
 DATA_DIR = args.DATA_DIR
 NET_PATH = args.NET_PATH
@@ -24,14 +25,10 @@ NUM_MEASUREMENTS_LIST = [NUM_MEASUREMENTS] # number of measurements to iterate o
 BATCH_SIZE = 1
 
 BASIS = ['dip'] # method:  put this in config so they can loop through list
-# line 21 pass in args. estimator is a dictionary of functions by model type
-# estimator is entire optimizn process for an algorithm. Pass in A, y, hparams
-
-# ISSUE: Not sure how Ajil did baselines. Check with him so it's consistent across methods
 
 
 compose = utils.define_compose(NUM_CHANNELS, IMG_SIZE)
-# SHOULD WE HAVE THEM DOWNLOAD MNIST FROM OUR REPO, OR USE THE TORCH COMMAND?
+# DOWNLOAD 100 MNIST IMAGES AND SAVE IN REPO, don't use Torch's MNIST loader
 # dataloader = torch.utils.data.DataLoader(datasets.MNIST('../data/',download=True, \
 # 				train=TRAIN,transform=compose), shuffle=False, batch_size=BATCH_SIZE)
 dataset = datasets.ImageFolder('data/tomo/', transform = compose)
@@ -40,14 +37,16 @@ dataloader = torch.utils.data.DataLoader(dataset, shuffle=False, batch_size=BATC
 
 
 RECONSTRUCTIONS = dict()
-MSE = dict()
-MEASUREMENT_LOSS = dict()
+MSE = dict() # CALUCATE LATER IN PLOT FILE
+
+#A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, num_measurements)
+#y = np.dot(x,A)
 
 for basis in BASIS: # DO WE NEED THIS?
     '''
-    A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, num_measurements)
-    y = np.dot(x,A)
-    if basis == 'dct':
+    if basis == 'csdip':
+        estimator = cs_dip.dip_estimator(args)
+    elif basis == 'dct':
         estimator = baselines.lasso_dct_estimator(args)
     elif basis == 'wavelet':
         estimator = baselines.lasso_wavelet_estimator(args)
@@ -60,45 +59,29 @@ for basis in BASIS: # DO WE NEED THIS?
         # check if the pickle files already exist. if they do, update the respective
         # empty dictionaries using contents of the files
         rec_f = '{0}_reconstructions_{1}.pkl'.format(basis,num_measurements)
-        mse_f = '{0}_mse_dip_{1}.pkl'.format(basis,num_measurements)
-        meas_f = '{0}_measurement_loss_{1}.pkl'.format(basis,num_measurements)
+
+
+        # rec_f = 'reconstructions/{0}/{1}'.format(basis,num_measurements) also dataset
+
+        # save x_hat in numpy file? nested directories OR pickle files
+            # save numpy files in nested directories since hierarchy is simple
+            # ISSUE: need filenames of images; or just save with index created based upon batch
+            # fix file
+
         if os.path.exists(rec_f):
             with open(rec_f,'rb') as f:
                 temp = pkl.load(f)
                 RECONSTRUCTIONS.update(temp)
-        if os.path.exists(mse_f):
-            with open(mse_f,'rb') as f:
-                temp = pkl.load(f)
-                MSE.update(temp)
-        if os.path.exists(meas_f):
-            with open(meas_f,'rb') as f:
-                temp = pkl.load(f)
-                MEASUREMENT_LOSS.update(temp)
-        
-        # check if the dictionary for num_measurements exists. if it does not,
-        # create an empty dictionary in its place
+
+
         if num_measurements in RECONSTRUCTIONS.keys():
             pass
         else:
             RECONSTRUCTIONS[num_measurements] = []
-        if num_measurements in MSE.keys():
-            pass
-        else:
-            MSE[num_measurements] = []
-        if num_measurements in MEASUREMENT_LOSS.keys():
-            pass
-        else:
-            MEASUREMENT_LOSS[num_measurements] = []
-
 
         for k, (batch, label) in enumerate(dataloader):
             if k>=100:
                 break            
-
-
-
-
-
 
             # DIP specific, e.g. if basis == 'dip'
             reconstructions_, mse_, meas_loss_ = csd.csdip_optimize(num_measurements, batch, label)
@@ -106,22 +89,13 @@ for basis in BASIS: # DO WE NEED THIS?
 
 
 
-
-
-
-            # append the above values to the appropriate dictionaries
             for j in range(BATCH_SIZE):
                 RECONSTRUCTIONS[num_measurements].append(reconstructions_[idx[j],j])
-                MSE[num_measurements].append(mse_[idx[j],j])
-                MEASUREMENT_LOSS[num_measurements].append(meas_loss_[idx[j],j])
-                print('Image ' + str(k+1) + ', MSE: ' + str(mse_[idx[j],j]))
+
+                print('Image ' + str(k+1))
                     
         # pickle the dictionaries
         with open(rec_f,'w') as f:
             pkl.dump(RECONSTRUCTIONS, f)
-        with open(mse_f,'w') as f:
-            pkl.dump(MSE, f)
-        with open(meas_f,'w') as f:
-            pkl.dump(MEASUREMENT_LOSS, f)
 
         print('Done!')
