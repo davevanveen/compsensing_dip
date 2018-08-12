@@ -2,7 +2,7 @@ import argparse
 import json
 
 
-def parse_args(config_file='config_json'):
+def parse_args(config_file='configs.json'):
     ALL_CONFIG = json.load(open(config_file))
 
     
@@ -19,19 +19,19 @@ def parse_args(config_file='config_json'):
     NUM_RESTARTS = CONFIG["number_restarts"]
  
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default=DATASET,\
+    parser.add_argument('--DATASET', type=str, default=DATASET,\
             help='dataset, DEFAULT=mnist. SUPPORTED=[mnist, xray]')
-    parser.add_argument('--learning-rate', type=float, default=LR,\
+    parser.add_argument('--LR', type=float, default=LR,\
     		help='learning rate, DEFAULT=' + str(LR))
-    parser.add_argument('--momentum', type=float, default=MOM,\
+    parser.add_argument('--MOM', type=float, default=MOM,\
     		help='RMSProp momentum hyperparameter, DEFAULT=' + str(MOM))
-    parser.add_argument('--weight-decay', type=float, default=WD,\
+    parser.add_argument('--WD', type=float, default=WD,\
     		help='l2 weight decay hyperparameter, DEFAULT=' + str(WD))
-    parser.add_argument('--number-iterations', type=int, default=NUM_ITER,\
+    parser.add_argument('--NUM_ITER', type=int, default=NUM_ITER,\
     		help='number of iterative weight updates, DEFAULT=' + str(NUM_ITER))
-    parser.add_argument('--number-restarts', type=int, default=NUM_RESTARTS,\
+    parser.add_argument('--NUM_RESTARTS', type=int, default=NUM_RESTARTS,\
     		help='number of restarts, DEFAULT=' + str(NUM_RESTARTS))
-
+	
     # add parser argument so that they can input num_measurements in list format
     # space separated after --
     # look at Bora's code
@@ -39,7 +39,7 @@ def parse_args(config_file='config_json'):
     args = parser.parse_args()
 
     # set values for data-specific configurations
-    SPECIFIC_CONFIG = ALL_CONFIG[args.dataset]
+    SPECIFIC_CONFIG = ALL_CONFIG[args.DATASET]
     args.NET_PATH = SPECIFIC_CONFIG["network_path"]
     args.DATA_DIR = SPECIFIC_CONFIG["data_dir"]
     args.IMG_SIZE = SPECIFIC_CONFIG["img_size"]
@@ -47,7 +47,7 @@ def parse_args(config_file='config_json'):
     args.NUM_MEASUREMENTS = SPECIFIC_CONFIG["num_measurements"]
     args.Z_DIM = SPECIFIC_CONFIG["z_dim"] #input seed
 
-    parser.add_argument('--number-measurements', type=int, \
+    parser.add_argument('--num-measurements', type=int, \
     		default=args.NUM_MEASUREMENTS, \
 			help='number of restarts, DEFAULT='+str(args.NUM_MEASUREMENTS))
 

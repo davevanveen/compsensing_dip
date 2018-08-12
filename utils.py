@@ -133,6 +133,7 @@ def plot(x,renormalize=True):
 exit_window = 25 # number of consecutive MSE values upon which we compare
 thresh_ratio = 20 # number of MSE values that must be larger for us to exit
 
+# Now doing this with loss value instead of MSE value. Hopefully will behave the same
 def exit_check(window, i): # if converged, then exit current experiment
     mse_base = window[0] # get first mse value in window
     
