@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from torchvision import transforms
+from torchvision import datasets,transforms
 
 CUDA = torch.cuda.is_available()
 
@@ -165,7 +165,6 @@ def define_compose(NC, IMG_SIZE): # define compose based on NUM_CHANNELS, IMG_SI
         ])
     return compose
 
-
 # TODO: add filename of image to args so that multiple images can be written to same direc
 def save_reconstruction(x_hat, args):
     fn = 'reconstructions/{0}/{1}/recons_{2}meas.npy'.format( \
@@ -193,3 +192,19 @@ def check_args(args): # check args for correctness
             if num_measurements > IM_DIMN:
                 raise ValueError('NUM_MEASUREMENTS must be less than image dimension ' \
                     + str(IM_DIMN))
+
+class ImageFolderWithPaths(datasets.ImageFolder):
+    """Custom dataset that includes image file paths. Extends
+    torchvision.datasets.ImageFolder
+    """
+
+    # override the __getitem__ method. this is the method dataloader calls
+    def __getitem__(self, index):
+        # this is what ImageFolder normally returns 
+        original_tuple = super(ImageFolderWithPaths, self).__getitem__(index)
+        # the image file path
+        path = self.imgs[index][0]
+        # make a new tuple that includes original and the path
+        tuple_with_path = (original_tuple + (path,))
+        return tuple_with_path
+      
