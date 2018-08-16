@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from torchvision import transforms
+from torchvision import datasets,transforms
 
 CUDA = torch.cuda.is_available()
 
@@ -159,3 +159,19 @@ def define_compose(NC, IMG_SIZE): # define compose based on NUM_CHANNELS, IMG_SI
             transforms.Normalize((.5,.5,.5),(.5,.5,.5))
         ])
     return compose
+
+class ImageFolderWithPaths(datasets.ImageFolder):
+    """Custom dataset that includes image file paths. Extends
+    torchvision.datasets.ImageFolder
+    """
+
+    # override the __getitem__ method. this is the method dataloader calls
+    def __getitem__(self, index):
+        # this is what ImageFolder normally returns 
+        original_tuple = super(ImageFolderWithPaths, self).__getitem__(index)
+        # the image file path
+        path = self.imgs[index][0]
+        # make a new tuple that includes original and the path
+        tuple_with_path = (original_tuple + (path,))
+        return tuple_with_path
+      
