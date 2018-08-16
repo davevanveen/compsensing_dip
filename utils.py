@@ -1,4 +1,7 @@
 import numpy as np
+import os
+import errno
+import parser
 
 import torch
 import torch.nn as nn
@@ -7,6 +10,8 @@ import torch.nn.functional as F
 from torchvision import transforms
 
 CUDA = torch.cuda.is_available()
+
+#args = parser.parse_args('configs.json')
 
 if CUDA : 
     dtype = torch.cuda.FloatTensor
@@ -159,3 +164,32 @@ def define_compose(NC, IMG_SIZE): # define compose based on NUM_CHANNELS, IMG_SI
             transforms.Normalize((.5,.5,.5),(.5,.5,.5))
         ])
     return compose
+
+
+# TODO: add filename of image to args so that multiple images can be written to same direc
+def save_reconstruction(x_hat, args):
+    fn = 'reconstructions/{0}/{1}/recons_{2}meas.npy'.format( \
+            args.DATASET, args.BASIS, args.NUM_MEASUREMENTS)
+
+    if not os.path.exists(os.path.dirname(fn)):
+        try:
+            os.makedirs(os.path.dirname(fn))
+        except OSError as exc: # guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+
+    with open(fn, 'w') as f:
+        f.write(x_hat)
+
+def check_args(args): # check args for correctness
+    IM_DIMN = args.IMG_SIZE * args.IMG_SIZE * args.NUM_CHANNELS
+
+    if isinstance(args.NUM_MEASUREMENTS, int):
+        if args.NUM_MEASUREMENTS > IM_DIMN:
+            raise ValueError('NUM_MEASUREMENTS must be less than image dimension ' \
+                + str(IM_DIMN))
+    else:
+        for num_measurements in args.NUM_MEASUREMENTS:
+            if num_measurements > IM_DIMN:
+                raise ValueError('NUM_MEASUREMENTS must be less than image dimension ' \
+                    + str(IM_DIMN))
