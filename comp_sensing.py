@@ -6,19 +6,31 @@ import parser
 import torch
 from torchvision import datasets
 
-import cs_dip
 import utils
+import cs_dip
 import baselines
 
 args = parser.parse_args('configs.json')
 
-
-NUM_MEASUREMENTS_LIST = args.NUM_MEASUREMENTS # TODO: cycle this over a list, add user input
-if isinstance(args.NUM_MEASUREMENTS, int): # if looking at single value for NUM_MEAS, cast to list
-    NUM_MEASUREMENTS_LIST = [NUM_MEASUREMENTS_LIST]
+# if a single value entered for NUM_MEAS or BASIS, convert to list
+NUM_MEASUREMENTS_LIST, BASIS_LIST = utils.convert_to_list(args)
 
 BATCH_SIZE = 1
-#BASIS = ['csdip'] # method:  put this in config so they can loop through list
+
+# class ImageFolderWithPaths(datasets.ImageFolder):
+#     """Custom dataset that includes image file paths. Extends
+#     torchvision.datasets.ImageFolder
+#     """
+
+#     # override the __getitem__ method. this is the method dataloader calls
+#     def __getitem__(self, index):
+#         # this is what ImageFolder normally returns 
+#         original_tuple = super(ImageFolderWithPaths, self).__getitem__(index)
+#         # the image file path
+#         path = self.imgs[index][0]
+#         # make a new tuple that includes original and the path
+#         tuple_with_path = (original_tuple + (path,))
+#         return tuple_with_path      
 
 
 compose = utils.define_compose(args.NUM_CHANNELS, args.IMG_SIZE)
@@ -28,8 +40,6 @@ compose = utils.define_compose(args.NUM_CHANNELS, args.IMG_SIZE)
 dataset = datasets.ImageFolder('data/tomo/', transform = compose)
 # TODO: shuffle data with more than one image
 dataloader = torch.utils.data.DataLoader(dataset, shuffle=False, batch_size=BATCH_SIZE)
-
-
 
 
 for num_measurements in NUM_MEASUREMENTS_LIST:
@@ -42,9 +52,7 @@ for num_measurements in NUM_MEASUREMENTS_LIST:
         x = batch.view(BATCH_SIZE, -1).cpu().numpy()
         y = np.dot(x,A)
 
-        for basis in args.BASIS: # check functionality for different bases
-            # print(args.BASIS)
-            # print(basis)
+        for basis in BASIS_LIST: # check functionality for different bases
             
             if basis == 'csdip':
                 estimator = cs_dip.dip_estimator(args)
