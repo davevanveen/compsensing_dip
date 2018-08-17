@@ -9,23 +9,18 @@ import torch.nn.functional as F
 
 from torchvision import datasets,transforms
 
-CUDA = torch.cuda.is_available()
+# CUDA = torch.cuda.is_available()
+# if CUDA : 
+#     dtype = torch.cuda.FloatTensor
+# else:
+#     dtype = torch.FloatTensor
 
-#args = parser.parse_args('configs.json')
-
-if CUDA : 
-    dtype = torch.cuda.FloatTensor
-    ltype = torch.cuda.LongTensor
-else:
-    dtype = torch.FloatTensor
-    ltype = torch.LongTensor
-
-se = torch.nn.MSELoss(reduce=False).type(dtype)
-l2 = nn.MSELoss().type(dtype)
+# se = torch.nn.MSELoss(reduce=False).type(dtype)
+# l2 = nn.MSELoss().type(dtype)
 
 class DCGAN_XRAY(nn.Module):
     def __init__(self, nz, ngf=64, output_size=256, nc=3, num_measurements=1000):
-        super(DCGAN_X, self).__init__()
+        super(DCGAN_XRAY, self).__init__()
         self.nc = nc
         self.output_size = output_size
 
@@ -165,6 +160,12 @@ def define_compose(NC, IMG_SIZE): # define compose based on NUM_CHANNELS, IMG_SI
         ])
     return compose
 
+def set_dtype(CUDA):
+    if CUDA: # if cuda is available
+        return torch.cuda.FloatTensor
+    else:
+        return torch.FloatTensor
+
 # TODO: add filename of image to args so that multiple images can be written to same direc
 def save_reconstruction(x_hat, args):
     fn = 'reconstructions/{0}/{1}/recons_{2}meas.npy'.format( \
@@ -193,6 +194,17 @@ def check_args(args): # check args for correctness
                 raise ValueError('NUM_MEASUREMENTS must be less than image dimension ' \
                     + str(IM_DIMN))
 
+def convert_to_list(args): # returns list for NUM_MEAS, BATCH
+    if not isinstance(args.NUM_MEASUREMENTS, list):
+        NUM_MEASUREMENTS_LIST = [args.NUM_MEASUREMENTS]
+    else:
+        NUM_MEASUREMENTS_LIST = args.NUM_MEASUREMENTS
+    if not isinstance(args.BASIS, list):
+        BASIS_LIST = [args.BASIS]
+    else:
+        BASIS_LIST = args.BASIS
+    return NUM_MEASUREMENTS_LIST, BASIS_LIST
+
 class ImageFolderWithPaths(datasets.ImageFolder):
     """Custom dataset that includes image file paths. Extends
     torchvision.datasets.ImageFolder
@@ -206,5 +218,4 @@ class ImageFolderWithPaths(datasets.ImageFolder):
         path = self.imgs[index][0]
         # make a new tuple that includes original and the path
         tuple_with_path = (original_tuple + (path,))
-        return tuple_with_path
-      
+        return tuple_with_path      
