@@ -15,7 +15,6 @@ dtype = utils.set_dtype(CUDA)
 
 se = torch.nn.MSELoss(reduce=False).type(dtype)
 
-#mse_min = 0.
 BEGIN_CHECKPOINT = 50 # iteration at which to begin checking exit condition
 EXIT_WINDOW = 25 # number of consecutive MSE values upon which we compare
 NGF = 64
@@ -24,7 +23,6 @@ BATCH_SIZE = 1
 meas_loss_ = np.zeros((args.NUM_RESTARTS, BATCH_SIZE))
 reconstructions_ = np.zeros((args.NUM_RESTARTS, BATCH_SIZE, args.NUM_CHANNELS, \
                     args.IMG_SIZE, args.IMG_SIZE))
-
 
 def dip_estimator(args):
     def estimator(A_val, y_batch_val, args):
