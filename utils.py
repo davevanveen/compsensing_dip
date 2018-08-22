@@ -9,14 +9,7 @@ import torch.nn.functional as F
 
 from torchvision import datasets,transforms
 
-# CUDA = torch.cuda.is_available()
-# if CUDA : 
-#     dtype = torch.cuda.FloatTensor
-# else:
-#     dtype = torch.FloatTensor
-
-# se = torch.nn.MSELoss(reduce=False).type(dtype)
-# l2 = nn.MSELoss().type(dtype)
+BATCH_SIZE = 1
 
 class DCGAN_XRAY(nn.Module):
     def __init__(self, nz, ngf=64, output_size=256, nc=3, num_measurements=1000):
@@ -97,8 +90,6 @@ class DCGAN_MNIST(nn.Module):
         x = F.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
-   
-
 
     def measurements(self, x, batch_size=1):
         # this gives the image
@@ -166,19 +157,36 @@ def set_dtype(CUDA):
     else:
         return torch.FloatTensor
 
-# TODO: add filename of image to args so that multiple images can be written to same direc
-def save_reconstruction(x_hat, args):
-    fn = 'reconstructions/{0}/{1}/recons_{2}meas.npy'.format( \
-            args.DATASET, args.BASIS, args.NUM_MEASUREMENTS)
+def get_path_out(args, path_in):
+    fn = path_leaf(path_in[0]) # format filename from path
 
-    if not os.path.exists(os.path.dirname(fn)):
+    path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
+            args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+    full_path = os.getcwd()  + '/' + path_out
+    return full_path
+
+
+def recons_exists(args, path_in):
+    path_out = get_path_out(args, path_in)
+    print(path_out)
+    if os.path.isfile(path_out):
+        return True
+    else:
+        return False
+
+# TODO: add filename of image to args so that multiple images can be written to same direc
+def save_reconstruction(x_hat, args, path_in):
+
+    path_out = get_path_out(args, path_in)
+
+    if not os.path.exists(os.path.dirname(path_out)):
         try:
-            os.makedirs(os.path.dirname(fn))
+            os.makedirs(os.path.dirname(path_out))
         except OSError as exc: # guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
 
-    with open(fn, 'w') as f:
+    with open(path_out, 'w') as f:
         f.write(x_hat)
 
 def check_args(args): # check args for correctness
@@ -193,6 +201,9 @@ def check_args(args): # check args for correctness
             if num_measurements > IM_DIMN:
                 raise ValueError('NUM_MEASUREMENTS must be less than image dimension ' \
                     + str(IM_DIMN))
+    if not args.DEMO == 'False':
+        if not args.DEMO == 'True':
+            raise ValueError('DEMO must be either True or False.')
 
 def convert_to_list(args): # returns list for NUM_MEAS, BATCH
     if not isinstance(args.NUM_MEASUREMENTS, list):
@@ -205,11 +216,36 @@ def convert_to_list(args): # returns list for NUM_MEAS, BATCH
         BASIS_LIST = args.BASIS
     return NUM_MEASUREMENTS_LIST, BASIS_LIST
 
+def path_leaf(path):
+    # if '/' in path and if '\\' in path:
+    #     raise ValueError('Path to image cannot contain both forward and backward slashes')
+
+    if '.' in path: # remove file extension
+        path_no_extn = os.path.splitext(path)[0]
+    else:
+        raise ValueError('Filename does not contain extension')
+    
+    head, tail = os.path.split(path_no_extn)
+    return tail or os.path.basename(head)
+
+def get_data(args):
+
+    compose = define_compose(args.NUM_CHANNELS, args.IMG_SIZE)
+
+    if args.DEMO == 'True':
+        image_direc = 'data/{0}_demo/'.format(args.DATASET)
+    else:
+        image_direc = 'data/{0}/'.format(args.DATASET)
+
+    dataset = ImageFolderWithPaths(image_direc, transform = compose)
+    dataloader = torch.utils.data.DataLoader(dataset, shuffle=True, batch_size=BATCH_SIZE)
+
+    return dataloader
+
 class ImageFolderWithPaths(datasets.ImageFolder):
     """Custom dataset that includes image file paths. Extends
     torchvision.datasets.ImageFolder
     """
-
     # override the __getitem__ method. this is the method dataloader calls
     def __getitem__(self, index):
         # this is what ImageFolder normally returns 
@@ -218,4 +254,5 @@ class ImageFolderWithPaths(datasets.ImageFolder):
         path = self.imgs[index][0]
         # make a new tuple that includes original and the path
         tuple_with_path = (original_tuple + (path,))
+
         return tuple_with_path      
