@@ -1,5 +1,6 @@
 {
 	"data_agnostic_configs": {
+		"demo": "True",
 		"dataset": "mnist",
 		"basis": "csdip",
 		"learning_rate": 0.001,
@@ -9,21 +10,15 @@
 		"number_restarts": 5
 	},
 	"xray": {
-		"network_path": "network/",
-		"data_dir": "data/tomo/xray1_crop_512.jpg",
 		"img_size": 256,
 		"num_channels": 1,
 		"num_measurements": 1000,
 		"z_dim": 32
 	},
 	"mnist": {
-		"network_path": "network/",
-		"data_dir": "data/mnist/img_1.jpg",
 		"img_size": 28,
 		"num_channels": 1,
 		"num_measurements": 100,
 		"z_dim": 128
 	}
-
-
 }
