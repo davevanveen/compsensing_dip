@@ -17,7 +17,8 @@ def parse_args(config_file='configs.json'):
     WD = CONFIG["weight_decay"]
     NUM_ITER = CONFIG["number_iterations"]
     NUM_RESTARTS = CONFIG["number_restarts"]
- 
+    LMBD = CONFIG["lambda"]
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--DEMO', type=str, default=DEMO, \
             help='demo, boolean. Set True to run method over subset of 5 images \
@@ -32,6 +33,8 @@ def parse_args(config_file='configs.json'):
     		help='RMSProp momentum hyperparameter, DEFAULT=' + str(MOM))
     parser.add_argument('--WD', type=float, default=WD,\
     		help='l2 weight decay hyperparameter, DEFAULT=' + str(WD))
+    parser.add_argument('--LMBD', type=float, default=LMBD,\
+    		help='lambda for L1, DEFAULT=' + str(LMBD))
     parser.add_argument('--NUM_ITER', type=int, default=NUM_ITER,\
     		help='number of iterative weight updates, DEFAULT=' + str(NUM_ITER))
     parser.add_argument('--NUM_RESTARTS', type=int, default=NUM_RESTARTS,\

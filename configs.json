@@ -1,13 +1,14 @@
 {
 	"data_agnostic_configs": {
-		"demo": "True",
+		"demo": "False",
 		"dataset": "mnist",
 		"basis": "csdip",
 		"learning_rate": 0.001,
 		"momentum": 0.9,
 		"weight_decay": 0.0001,
 		"number_iterations": 300,
-		"number_restarts": 5
+		"number_restarts": 5,
+    "lambda":1e-5
 	},
 	"xray": {
 		"img_size": 256,

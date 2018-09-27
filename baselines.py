@@ -65,12 +65,12 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
         # One can prove that taking 2D DWT of each row of A,
         # then solving usual LASSO, and finally taking 2D IWT gives the correct answer.
         A_new = copy.deepcopy(A_val)
-        arr, coeff_slices = db4(devec(A_new[:,0])[0],args.NUM_CHANNELS)
+        arr, coeff_slices = db4(devec(A_new[:,0],args.NUM_CHANNELS)[0])
         A_wav = np.zeros((arr.shape[0]*arr.shape[1],A_val.shape[1]))
         for i in range(A_val.shape[1]):
             A_wav[:, i] = vec([db4(channel)[0] for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
         x_hat_batch = []
-        for j in range(args.BATCH_SIZE):
+        for j in range(y_batch_val.shape[0]):
             y_val = y_batch_val[j]
             z_hat = solve_lasso(A_wav, y_val, args.LMBD)
             x_hat = vec([idb4(channel,coeff_slices) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
