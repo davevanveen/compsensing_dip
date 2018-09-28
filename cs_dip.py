@@ -73,7 +73,7 @@ def dip_estimator(args):
                 optim.step()  
 
             reconstructions_[j] = net(z).data.cpu().numpy() # get reconstructions        
-            meas_loss_[j] = meas_loss # get last measurement loss for a given restart
+            meas_loss_[j] = meas_loss #np.mean(loss_temp[-EXIT_WINDOW:]) # get last measurement loss for a given restart
 
         idx_best = np.argmin(meas_loss_,axis=0) # index of restart with lowest loss
         x_hat = reconstructions_[idx_best] # choose best reconstruction from all restarts
