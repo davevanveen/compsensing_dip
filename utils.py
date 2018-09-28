@@ -62,10 +62,11 @@ class DCGAN_XRAY(nn.Module):
         return self.fc(y)
 
 class DCGAN_MNIST(nn.Module):
-    def __init__(self, nz, ngf=128, output_size=28, nc=1, num_measurements=10):
+    def __init__(self, nz, ngf=64, output_size=28, nc=1, num_measurements=10):
         super(DCGAN_MNIST, self).__init__()
         self.nc = nc
         self.output_size = output_size
+
 
         self.conv1 = nn.ConvTranspose2d(nz, ngf*8, 2, 1, 0, bias=False)
         self.bn1 = nn.BatchNorm2d(ngf*8)
@@ -80,7 +81,7 @@ class DCGAN_MNIST(nn.Module):
         self.fc = nn.Linear(output_size*output_size*nc,num_measurements, bias=False) #output is A
         # each entry should be drawn from a Gaussian
         # don't compute gradient of self.fc
-
+    
     def forward(self, x):
         input_size = x.size()
         x = F.upsample(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
@@ -90,7 +91,7 @@ class DCGAN_MNIST(nn.Module):
         x = F.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
-
+   
     def measurements(self, x, batch_size=1):
         # this gives the image
         # make it a single row vector of appropriate length
@@ -186,8 +187,7 @@ def save_reconstruction(x_hat, args, path_in):
             if exc.errno != errno.EEXIST:
                 raise
 
-    with open(path_out, 'w') as f:
-        f.write(x_hat)
+    np.save(path_out, x_hat)
 
 def check_args(args): # check args for correctness
     IM_DIMN = args.IMG_SIZE * args.IMG_SIZE * args.NUM_CHANNELS
@@ -238,7 +238,7 @@ def get_data(args):
         image_direc = 'data/{0}/'.format(args.DATASET)
 
     dataset = ImageFolderWithPaths(image_direc, transform = compose)
-    dataloader = torch.utils.data.DataLoader(dataset, shuffle=True, batch_size=BATCH_SIZE)
+    dataloader = torch.utils.data.DataLoader(dataset, shuffle=False, batch_size=BATCH_SIZE)
 
     return dataloader
 
