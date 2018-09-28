@@ -47,16 +47,13 @@ def lasso_dct_estimator(args):  #pylint: disable = W0613
         # then solving usual LASSO, and finally taking 2D ICT gives the correct answer.
         A_new = copy.deepcopy(A_val)
         for i in range(A_val.shape[1]):
-            A_new[:, i] = vec([dct2(channel,args.NUM_CHANNELS) for channel in devec(A_new[:, i],args.NUM_CHANNELS)])
+            A_new[:, i] = vec([dct2(channel) for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
 
-        x_hat_batch = []
-        for j in range(args.BATCH_SIZE):
-            y_val = y_batch_val[j]
-            z_hat = solve_lasso(A_new, y_val, args.LMBD)
-            x_hat = vec([idct2(channel) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
-            x_hat = np.maximum(np.minimum(x_hat, 1), -1)
-            x_hat_batch.append(x_hat)
-        return x_hat_batch
+        y_val = y_batch_val[0]
+        z_hat = solve_lasso(A_new, y_val, args.LMBD)
+        x_hat = vec([idct2(channel) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
+        x_hat = np.maximum(np.minimum(x_hat, 1), -1)
+        return x_hat
     return estimator
 
 def lasso_wavelet_estimator(args):  #pylint: disable = W0613
@@ -69,14 +66,11 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
         A_wav = np.zeros((arr.shape[0]*arr.shape[1],A_val.shape[1]))
         for i in range(A_val.shape[1]):
             A_wav[:, i] = vec([db4(channel)[0] for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
-        x_hat_batch = []
-        for j in range(y_batch_val.shape[0]):
-            y_val = y_batch_val[j]
-            z_hat = solve_lasso(A_wav, y_val, args.LMBD)
-            x_hat = vec([idb4(channel,coeff_slices) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
-            x_hat = np.maximum(np.minimum(x_hat, 1), -1)
-            x_hat_batch.append(x_hat)
-        return x_hat_batch
+        y_val = y_batch_val[0]
+        z_hat = solve_lasso(A_wav, y_val, args.LMBD)
+        x_hat = vec([idb4(channel,coeff_slices) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
+        x_hat = np.maximum(np.minimum(x_hat, 1), -1)
+        return x_hat
     return estimator
 
 def get_A(dimension,num_measurements):
