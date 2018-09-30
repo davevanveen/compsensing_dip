@@ -1,0 +1,7 @@
+torch
+torchvision
+scipy
+scikit-learn
+matplotlib
+skimage
+jupyter
