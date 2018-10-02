@@ -3,7 +3,7 @@
 This repository provides code to reproduce results from the paper: [Compressed Sensing with Deep Image Prior and Learned Regularization](https://arxiv.org/pdf/1806.06438.pdf). Functionality for the learned regularization method is currently in progress.
 
 Here are a few example results [need .pngs]:
-<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.pdf" alt="mnist_reconstr" width="300">
+<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="300">
 
 
 ### Preliminaries
@@ -20,16 +20,17 @@ Here are a few example results [need .pngs]:
     ```shell
     $ pip install -r requirements.txt
     ```
-    Need to include list of requirements?
 
 
-### Generate plots, reconstructions with existing data
+### Generate reconstructions with existing data
 ---
 1. Open jupyter notebook of plots
     ```shell
-    $ jupyter notebook plot.ipynb
+    $ jupyter notebook reconstructions.ipynb
     ```	
-2. Set the variables ```DATASET``` and ```NUM_MEASUREMENTS LIST``` to plot reconstructions of interest
+2. Set the variables ```DATASET``` and ```NUM_MEASUREMENTS_LIST```. Data is provided for NUM_MEASUREMENTS [10, 25, 50, 75, 100] on MNIST and [1000, 2000, 4000, and 8000] on the xray dataset.
+
+3. Execute cells to view output.
 
 
 ### Generating new reconstructions on the MNIST or xray datasets
