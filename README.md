@@ -3,7 +3,9 @@
 This repository provides code to reproduce results from the paper: [Compressed Sensing with Deep Image Prior and Learned Regularization](https://arxiv.org/pdf/1806.06438.pdf). Functionality for the learned regularization method is currently in progress.
 
 Here are a few example results [need .pngs]:
-<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="300">
+
+#### MNIST reconstructions at 100 measurements
+<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="600">
 
 
 ### Preliminaries
@@ -22,7 +24,7 @@ Here are a few example results [need .pngs]:
     ```
 
 
-### Generate reconstructions with existing data
+### Plot reconstructions with existing data
 ---
 1. Open jupyter notebook of plots
     ```shell
