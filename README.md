@@ -55,7 +55,7 @@ Note: To reduce runtime, redundant reconstruction data will not be generated for
 ---
 1. Create a new directory ```/data/dataset_name/sub/``` which contains your images
 2. In ```utils.py```, create a new DCGAN architecture. This will be similar to the pre-defined ```DCGAN_MNIST``` and ```DCGAN_XRAY``` but must have output dimension equal to the size of your new images. Output dimension can be changed by adjusting kernel_size, stride, and padding as discussed in the [torch.nn documentation](https://pytorch.org/docs/stable/nn.html#convtranspose2d). 
-3. Update ```configs.json```, ```parser.py``` to set parameters for your dataset. Update ```cs_dip.py``` to import/initiate the corresponding DCGAN.
+3. Update ```configs.json``` to set parameters for your dataset. Update ```cs_dip.py``` to import/initiate the corresponding DCGAN.
 4. Generate and plot reconstructions according to instructions above.
 
 Note: We recommend experimenting with the DCGAN architecture and dataset parameters to obtain the best possible reconstructions.
