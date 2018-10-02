@@ -8,15 +8,6 @@ MNIST at 100 measurements | X-ray at 4000 measurements
 --------------------------|---------------------------
 <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/xray_sample_4000meas.png" alt="mnist_reconstr" width="450">
 
-
-
-#### MNIST reconstructions at 100 measurements
-<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="500">
-
-#### X-ray reconstructions at 4000 measurements
-<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/xray_sample_4000meas.png" alt="mnist_reconstr" width="500">
-
-
 ### Preliminaries
 ---
 
