@@ -24,7 +24,7 @@ MNIST at 100 measurements | X-ray at 4000 measurements
     ```
 
 
-### Plot reconstructions with existing data
+### Plotting reconstructions with existing data
 ---
 1. Open jupyter notebook of plots
     ```shell
