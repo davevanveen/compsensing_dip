@@ -60,6 +60,7 @@ def dip_estimator(args):
                 loss.backward()
                 
                 meas_loss = np.sum(se(net.measurements(z,batch_size=BATCH_SIZE),y).data.cpu().numpy(),axis=1)
+                
                 loss_temp.append(meas_loss) # save loss value of each iteration to array
                 
                 if (i >= BEGIN_CHECKPOINT): # if optimzn has converged, exit descent

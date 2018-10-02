@@ -54,7 +54,7 @@ def parse_args(config_file='configs.json'):
     if not args.NUM_MEASUREMENTS:
         args.NUM_MEASUREMENTS = NUM_MEAS_DEFAULT
 
-    print(args)
+    #print(args)
 
     utils.check_args(args) # check to make sure args are correct
 

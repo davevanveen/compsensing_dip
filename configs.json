@@ -5,8 +5,8 @@
 		"basis": "csdip",
 		"learning_rate": 0.001,
 		"momentum": 0.9,
-		"weight_decay": 0.0001,
-		"number_iterations": 300,
+		"weight_decay": 0,
+		"number_iterations": 1000,
 		"number_restarts": 5,
     "lambda":1e-5
 	},
