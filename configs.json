@@ -1,20 +1,20 @@
 {
 	"data_agnostic_configs": {
-		"demo": "False",
-		"dataset": "mnist",
+		"demo": "True",
+		"dataset": "xray",
 		"basis": "csdip",
 		"learning_rate": 0.001,
 		"momentum": 0.9,
-		"weight_decay": 0.0001,
-		"number_iterations": 300,
-		"number_restarts": 5,
+		"weight_decay": 0.,
+		"number_iterations": 500,
+		"number_restarts": 1,
     "lambda":1e-5
 	},
 	"xray": {
 		"img_size": 256,
 		"num_channels": 1,
 		"num_measurements": 1000,
-		"z_dim": 32
+		"z_dim": 64
 	},
 	"mnist": {
 		"img_size": 28,
