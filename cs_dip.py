@@ -56,7 +56,7 @@ def dip_estimator(args):
                 total_loss.backward()
                 optim.step()  
 
-                meas_loss = y_loss.data.cpu().numpy()[0]
+                meas_loss = y_loss.data.cpu().numpy()
                 loss_temp.append(meas_loss) # save loss value of each iteration to array
                
                 '''
