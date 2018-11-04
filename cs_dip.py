@@ -56,8 +56,7 @@ def dip_estimator(args):
                 total_loss.backward()
                 optim.step()  
 
-                #pixel_loss = np.mean(np.power(net(z).view(1,-1).cpu().detach().numpy() - args.x,2))
-                meas_loss = y_loss.data.cpu().numpy()
+                meas_loss = y_loss.data.cpu().numpy()[0]
                 loss_temp.append(meas_loss) # save loss value of each iteration to array
                
                 '''

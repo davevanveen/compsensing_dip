@@ -45,7 +45,7 @@ for num_measurements in NUM_MEASUREMENTS_LIST:
             else:
                 raise NotImplementedError
 
-            x_hat = estimator(A,y,args)
+            x_hat = estimator(A, y, args)
 
             utils.save_reconstruction(x_hat, args, im_path)
 

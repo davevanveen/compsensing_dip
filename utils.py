@@ -84,14 +84,8 @@ def plot(x,renormalize=True):
     else:
         plt.imshow(x.data[0].cpu().numpy(), cmap='gray')
 
-# def initialize_z(z,value):
-#     z.data = value.data.type(dtype)
-#     return z
-
 exit_window = 25 # number of consecutive MSE values upon which we compare
 thresh_ratio = 20 # number of MSE values that must be larger for us to exit
-
-# Now doing this with loss value instead of MSE value. Hopefully will behave the same
 def exit_check(window, i): # if converged, then exit current experiment
     mse_base = window[0] # get first mse value in window
     
@@ -126,7 +120,6 @@ def set_dtype(CUDA):
 
 def get_path_out(args, path_in):
     fn = path_leaf(path_in[0]) # format filename from path
-
     path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
             args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
     full_path = os.getcwd()  + '/' + path_out
@@ -135,7 +128,6 @@ def get_path_out(args, path_in):
 
 def recons_exists(args, path_in):
     path_out = get_path_out(args, path_in)
-    print(path_out)
     if os.path.isfile(path_out):
         return True
     else:
@@ -145,6 +137,7 @@ def recons_exists(args, path_in):
 def save_reconstruction(x_hat, args, path_in):
 
     path_out = get_path_out(args, path_in)
+
 
     if not os.path.exists(os.path.dirname(path_out)):
         try:
