@@ -31,35 +31,18 @@ class DCGAN_XRAY(nn.Module):
         self.bn6 = nn.BatchNorm2d(ngf)
         self.conv7 = nn.ConvTranspose2d(ngf, nc, 4, 2, 1, bias=False) #output is image
     
-        self.fc = nn.Linear(output_size*output_size*nc,num_measurements, bias=False) #output is A
-        # each entry should be drawn from a Gaussian
-        # don't compute gradient of self.fc
     
-    def forward(self, x):
-        input_size = x.size()
-        x = F.relu(self.bn1(self.conv1(x)))
+    def forward(self, z):
+        input_size = z.size()
+        x = F.relu(self.bn1(self.conv1(z)))
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
         x = F.relu(self.bn4(self.conv4(x)))
         x = F.relu(self.bn5(self.conv5(x)))
         x = F.relu(self.bn6(self.conv6(x)))
-        x = F.tanh(self.conv7(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
+        x = torch.tanh(self.conv7(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
-
-    def measurements(self, x, batch_size=1):
-        # this gives the image
-        # make it a single row vector of appropriate length
-        y = self.forward(x).view(batch_size,-1)
-
-        #passing it through the fully connected layer
-        # returns A*image
-        return self.fc(y)
-    
-    def measurements_(self, x):
-        # measure an image x
-        y = x.view(1,-1)
-        return self.fc(y)
 
 class DCGAN_MNIST(nn.Module):
     def __init__(self, nz, ngf=64, output_size=28, nc=1, num_measurements=10):
@@ -78,9 +61,6 @@ class DCGAN_MNIST(nn.Module):
         self.bn4 = nn.BatchNorm2d(ngf)
         self.conv5 = nn.ConvTranspose2d(ngf, nc, 3, 1, 1, bias=False) 
         
-        self.fc = nn.Linear(output_size*output_size*nc,num_measurements, bias=False) #output is A
-        # each entry should be drawn from a Gaussian
-        # don't compute gradient of self.fc
     
     def forward(self, x):
         input_size = x.size()
@@ -88,24 +68,10 @@ class DCGAN_MNIST(nn.Module):
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.upsample(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
         x = F.upsample(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
-        x = F.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
+        x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
    
-    def measurements(self, x, batch_size=1):
-        # this gives the image
-        # make it a single row vector of appropriate length
-        y = self.forward(x).view(batch_size,-1)
-
-        #passing it through the fully connected layer
-        # returns A*image
-        return self.fc(y)
-    
-    def measurements_(self, x):
-        # measure an image x
-        y = x.view(1,-1)
-        return self.fc(y)
-
 def norm(x):
     return x*2.0 - 1.0
 
