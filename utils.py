@@ -128,6 +128,7 @@ def get_path_out(args, path_in):
 
 def recons_exists(args, path_in):
     path_out = get_path_out(args, path_in)
+    print(path_out)
     if os.path.isfile(path_out):
         return True
     else:
