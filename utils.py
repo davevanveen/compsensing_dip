@@ -120,8 +120,12 @@ def set_dtype(CUDA):
 
 def get_path_out(args, path_in):
     fn = path_leaf(path_in[0]) # format filename from path
-    path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
+    if args.BASIS == 'bm3d':
+        path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.mat'.format( \
             args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+    else:
+        path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
+                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
     full_path = os.getcwd()  + '/' + path_out
     return full_path
 
@@ -201,6 +205,9 @@ def get_data(args):
     dataloader = torch.utils.data.DataLoader(dataset, shuffle=False, batch_size=BATCH_SIZE)
 
     return dataloader
+
+def renorm_bm3d(x): # maps [0,256] output from .mat file to [-1,1] for conistency 
+    return .0078125*x - 1
 
 class ImageFolderWithPaths(datasets.ImageFolder):
     """Custom dataset that includes image file paths. Extends
