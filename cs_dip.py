@@ -14,10 +14,6 @@ CUDA = torch.cuda.is_available()
 dtype = utils.set_dtype(CUDA)
 
 se = torch.nn.MSELoss(reduction='none').type(dtype)
-#se = torch.nn.MSELoss().type(dtype)
-
-# BEGIN_CHECKPOINT = 50 # iteration at which to begin checking exit condition
-# EXIT_WINDOW = 25 # number of consecutive MSE values upon which we compare
 
 BATCH_SIZE = 1
 
@@ -45,8 +41,6 @@ def dip_estimator(args):
 
                 optim.zero_grad()
 
-
-
                 net_measurements = torch.matmul(net(z).view(BATCH_SIZE,-1),A)
                 tv_loss = 1e-1 * \
                         (torch.sum(torch.abs(net(z)[:, :, :, :-1] - net(z)[:, :, :, 1:]))\
@@ -59,15 +53,7 @@ def dip_estimator(args):
                 meas_loss = y_loss.data.cpu().numpy()
                 loss_temp.append(meas_loss) # save loss value of each iteration to array
                
-                '''
-                if (i >= BEGIN_CHECKPOINT): # if optimzn has converged, exit descent
-                    should_exit, loss_min_restart = utils.exit_check(loss_temp[-EXIT_WINDOW:],i)
-                    if should_exit == True:
-                        meas_loss = loss_min_restart # get first loss value of exit window
-                        break
-                else:
-                    should_exit = False
-                '''
+
 
             reconstructions_[j] = net(z).data.cpu().numpy() # get reconstructions        
             meas_loss_[j] = meas_loss #np.mean(loss_temp[-20:]) # get last measurement loss for a given restart

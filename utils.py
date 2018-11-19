@@ -126,6 +126,18 @@ def plot(x,renormalize=True):
     else:
         plt.imshow(x.data[0].cpu().numpy(), cmap='gray')
 
+
+''' # early stopping based on convergence - insert in inner loop of cs_dip.py to implement
+# BEGIN_CHECKPOINT = 50 # iteration at which to begin checking exit condition
+# EXIT_WINDOW = 25 # number of consecutive MSE values upon which we compare
+if (i >= BEGIN_CHECKPOINT): # if optimzn has converged, exit descent
+    should_exit, loss_min_restart = utils.exit_check(loss_temp[-EXIT_WINDOW:],i)
+    if should_exit == True:
+        meas_loss = loss_min_restart # get first loss value of exit window
+        break
+else:
+    should_exit = False
+'''
 exit_window = 25 # number of consecutive MSE values upon which we compare
 thresh_ratio = 20 # number of MSE values that must be larger for us to exit
 def exit_check(window, i): # if converged, then exit current experiment
