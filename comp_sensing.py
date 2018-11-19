@@ -13,6 +13,7 @@ import baselines
 NEW_RECONS = False
 
 args = parser.parse_args('configs.json')
+print(args)
 
 NUM_MEASUREMENTS_LIST, BASIS_LIST = utils.convert_to_list(args)
 

@@ -71,6 +71,48 @@ class DCGAN_MNIST(nn.Module):
         x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
+
+class DCGAN_RETINO(nn.Module):
+    def __init__(self, nz, ngf=64, output_size=256, nc=3, num_measurements=1000):
+        super(DCGAN_RETINO, self).__init__()
+        self.nc = nc
+        self.output_size = output_size
+
+        self.conv1 = nn.ConvTranspose2d(nz, ngf, 4, 1, 0, bias=False)
+        self.bn1 = nn.BatchNorm2d(ngf)
+        self.conv2 = nn.ConvTranspose2d(ngf, ngf, 6, 2, 2, bias=False)
+        self.bn2 = nn.BatchNorm2d(ngf)
+        self.conv3 = nn.ConvTranspose2d(ngf, ngf, 6, 2, 2, bias=False)
+        self.bn3 = nn.BatchNorm2d(ngf)
+        self.conv4 = nn.ConvTranspose2d(ngf, ngf, 6, 2, 2, bias=False)
+        self.bn4 = nn.BatchNorm2d(ngf)
+        self.conv5 = nn.ConvTranspose2d(ngf, ngf, 6, 2, 2, bias=False)
+        self.bn5 = nn.BatchNorm2d(ngf)
+        self.conv6 = nn.ConvTranspose2d(ngf, nc, 4, 2, 1, bias=False)
+        #self.fc = nn.Linear((output_size)*(output_size)*nc,num_measurements, bias=False) #output is A
+   
+    def forward(self, x):
+        input_size = x.size()
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
+        x = F.relu(self.bn4(self.conv4(x)))
+        x = F.relu(self.bn5(self.conv5(x)))
+        x = torch.tanh(self.conv6(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
+       
+        return x
+NGF = 64
+def init_dcgan(args):
+    if args.DATASET == 'xray':
+        net = DCGAN_XRAY(args.Z_DIM, NGF, args.IMG_SIZE,\
+            args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
+    elif args.DATASET == 'mnist':
+        net = DCGAN_MNIST(args.Z_DIM, NGF, args.IMG_SIZE,\
+            args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
+    elif args.DATASET == 'retino':
+        net = DCGAN_RETINO(args.Z_DIM, NGF, args.IMG_SIZE,\
+            args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
+    return net
    
 def norm(x):
     return x*2.0 - 1.0
