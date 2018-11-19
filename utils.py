@@ -137,6 +137,7 @@ if (i >= BEGIN_CHECKPOINT): # if optimzn has converged, exit descent
         break
 else:
     should_exit = False
+#loss_temp.append(meas_loss) # save loss value of each iteration to array
 '''
 exit_window = 25 # number of consecutive MSE values upon which we compare
 thresh_ratio = 20 # number of MSE values that must be larger for us to exit

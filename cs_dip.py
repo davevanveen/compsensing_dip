@@ -9,7 +9,6 @@ from utils import DCGAN_XRAY, DCGAN_MNIST
 
 args = parser.parse_args('configs.json') # contains neural net hyperparameters
 
-
 CUDA = torch.cuda.is_available()
 dtype = utils.set_dtype(CUDA)
 
@@ -51,12 +50,10 @@ def dip_estimator(args):
                 optim.step()  
 
                 meas_loss = y_loss.data.cpu().numpy()
-                loss_temp.append(meas_loss) # save loss value of each iteration to array
+                
                
-
-
             reconstructions_[j] = net(z).data.cpu().numpy() # get reconstructions        
-            meas_loss_[j] = meas_loss #np.mean(loss_temp[-20:]) # get last measurement loss for a given restart
+            meas_loss_[j] = meas_loss
 
         idx_best = np.argmin(meas_loss_,axis=0) # index of restart with lowest loss
         x_hat = reconstructions_[idx_best] # choose best reconstruction from all restarts
