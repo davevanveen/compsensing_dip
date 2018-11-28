@@ -8,7 +8,8 @@ from torchvision import datasets
 
 import utils
 import cs_dip
-import baselines
+import baselines_python as baselines 
+import time
 
 NEW_RECONS = False
 
@@ -45,8 +46,6 @@ for num_measurements in NUM_MEASUREMENTS_LIST:
                 estimator = baselines.lasso_wavelet_estimator(args)
             else:
                 raise NotImplementedError
-
-            x_hat = estimator(A, y, args)
 
             utils.save_reconstruction(x_hat, args, im_path)
 
