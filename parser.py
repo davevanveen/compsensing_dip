@@ -24,7 +24,7 @@ def parse_args(config_file='configs.json'):
             help='demo, boolean. Set True to run method over subset of 5 images \
              (default). Set False to run over entire dataset.')
     parser.add_argument('--DATASET', type=str, default=DATASET,\
-            help='dataset, DEFAULT=mnist. SUPPORTED=[mnist, xray]')
+            help='dataset, DEFAULT=mnist. SUPPORTED=[mnist, xray, retino]')
     parser.add_argument('--BASIS', nargs='+', type=str, default=BASIS,\
         help='basis, DEFAULT=csdip. SUPPORTED=[csdip, dct, wavelet]')
     parser.add_argument('--LR', type=float, default=LR,\
@@ -54,7 +54,7 @@ def parse_args(config_file='configs.json'):
     if not args.NUM_MEASUREMENTS:
         args.NUM_MEASUREMENTS = NUM_MEAS_DEFAULT
 
-    print(args)
+    #print(args)
 
     utils.check_args(args) # check to make sure args are correct
 

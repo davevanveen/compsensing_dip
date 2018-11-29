@@ -8,11 +8,13 @@ from torchvision import datasets
 
 import utils
 import cs_dip
-import baselines
+import baselines_python as baselines 
+import time
 
 NEW_RECONS = False
 
 args = parser.parse_args('configs.json')
+print(args)
 
 NUM_MEASUREMENTS_LIST, BASIS_LIST = utils.convert_to_list(args)
 
