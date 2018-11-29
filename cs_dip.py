@@ -48,7 +48,7 @@ def dip_estimator(args):
 
                 optim.zero_grad()
                 net_measurements = torch.matmul(net(z).view(BATCH_SIZE,-1),A)
-                tv_loss = 1e-1 * \
+                tv_loss = 1e-2 * \
                         (torch.sum(torch.abs(net(z)[:, :, :, :-1] - net(z)[:, :, :, 1:]))\
                         +torch.sum(torch.abs(net(z)[:, :, :-1, :] - net(z)[:, :, 1:, :])))
                 y_loss = torch.mean(torch.sum(se(net_measurements,y),dim=1)) 
