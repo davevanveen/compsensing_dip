@@ -23,6 +23,12 @@ dataloader = utils.get_data(args) # get dataset of images over which to iterate
 for num_measurements in NUM_MEASUREMENTS_LIST:
 
     args.NUM_MEASUREMENTS = num_measurements
+    if args.LEARNED_REG:
+        LR_MU_FILENAME = "mu19_avg_{0}.npy".format(num_measurements)
+        args.LEARNED_REG_MU_PATH = os.path.join(args.LR_FOLDER,LR_MU_FILENAME)
+        LR_SIGMA_FILENAME = "sig19_avg_{0}.npy".format(num_measurements)
+        args.LEARNED_REG_SIGMA_PATH = os.path.join(args.LR_FOLDER,LR_SIGMA_FILENAME)
+    
     A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
 
     for _, (batch, _, im_path) in enumerate(dataloader):

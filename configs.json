@@ -5,7 +5,7 @@
 		"basis": "csdip",
 		"learning_rate": 0.001,
 		"momentum": 0.9,
-    	"weight_decay": 0,
+   	"weight_decay": 0,
 		"number_iterations": 500,
 		"number_restarts": 1,
     	"lambda":1e-5
@@ -14,13 +14,15 @@
 		"img_size": 256,
 		"num_channels": 1,
 		"num_measurements": 1000,
-		"z_dim": 64
+		"z_dim": 64,
+    "lr_folder": "./learned_regularization/xray/"
 	},
 	"mnist": {
 		"img_size": 28,
 		"num_channels": 1,
 		"num_measurements": 100,
-		"z_dim": 128
+		"z_dim": 128,
+    "lr_folder": "./learned_regularization/xray/"
 	},
 	"retino": {
 		"img_size": 128,

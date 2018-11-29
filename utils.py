@@ -179,7 +179,11 @@ def get_path_out(args, path_in):
         path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.mat'.format( \
             args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
     else:
-        path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
+        if args.LEARNED_REG and args.BASIS=='csdip':
+            path_out = 'reconstructions/{0}/{1}lr/meas{2}/im{3}.npy'.format( \
+                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+        else:
+            path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
                 args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
     full_path = os.getcwd()  + '/' + path_out
     return full_path

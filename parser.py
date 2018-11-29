@@ -18,7 +18,6 @@ def parse_args(config_file='configs.json'):
     NUM_ITER = CONFIG["number_iterations"]
     NUM_RESTARTS = CONFIG["number_restarts"]
     LMBD = CONFIG["lambda"]
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--DEMO', type=str, default=DEMO, \
             help='demo, boolean. Set True to run method over subset of 5 images \
@@ -41,7 +40,12 @@ def parse_args(config_file='configs.json'):
     		help='number of restarts, DEFAULT=' + str(NUM_RESTARTS))
     parser.add_argument('--NUM_MEASUREMENTS', nargs='+', type=int, default = None, \
             help='number of measurements, DEFAULT dependent on dataset')
-
+    
+    boolean_parser = parser.add_mutually_exclusive_group(required=False)
+    boolean_parser.add_argument('--LEARNED_REG', dest='LEARNED_REG', action='store_true')
+    boolean_parser.add_argument('--NO_LEARNED_REG', dest='LEARNED_REG', action='store_false')
+    parser.set_defaults(LEARNED_REG=False)
+    
     args = parser.parse_args()
 
     # set values for data-specific configurations
@@ -49,7 +53,7 @@ def parse_args(config_file='configs.json'):
     args.IMG_SIZE = SPECIFIC_CONFIG["img_size"]
     args.NUM_CHANNELS = SPECIFIC_CONFIG["num_channels"]
     args.Z_DIM = SPECIFIC_CONFIG["z_dim"] #input seed
-
+    args.LR_FOLDER = SPECIFIC_CONFIG["lr_folder"]
     NUM_MEAS_DEFAULT = SPECIFIC_CONFIG["num_measurements"]
     if not args.NUM_MEASUREMENTS:
         args.NUM_MEASUREMENTS = NUM_MEAS_DEFAULT
