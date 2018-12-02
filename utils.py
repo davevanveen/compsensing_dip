@@ -64,10 +64,15 @@ class DCGAN_MNIST(nn.Module):
     
     def forward(self, x):
         input_size = x.size()
-        x = F.upsample(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
+        # x = F.upsample(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
+        # x = F.relu(self.bn2(self.conv2(x)))
+        # x = F.upsample(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
+        # x = F.upsample(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
+        # x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
+        x = F.interpolate(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
         x = F.relu(self.bn2(self.conv2(x)))
-        x = F.upsample(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
-        x = F.upsample(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
+        x = F.interpolate(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
+        x = F.interpolate(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
         x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
