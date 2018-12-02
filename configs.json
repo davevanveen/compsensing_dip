@@ -22,12 +22,13 @@
 		"num_channels": 1,
 		"num_measurements": 100,
 		"z_dim": 128,
-    "lr_folder": "./learned_regularization/xray/"
+    "lr_folder": "./learned_regularization/mnist/"
 	},
 	"retino": {
 		"img_size": 128,
 		"num_channels": 3,
 		"num_measurements": 10000,
-		"z_dim": 32
+		"z_dim": 32,
+	"lr_folder": "./learned_regularization/retino/"
 	}
 }
