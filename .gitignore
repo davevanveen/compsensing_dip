@@ -4,7 +4,6 @@
 /reconstructions
 /data/statistics
 /data/2.png
-/learned_regularization
 cs_dip_mnist.py
 cs_dip_retino.py
 plot.ipynb
