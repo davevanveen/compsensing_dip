@@ -2,3 +2,14 @@
 *.py.swp*
 *.ipynb*
 /reconstructions
+/data/statistics
+/data/2.png
+/learned_regularization
+cs_dip_mnist.py
+cs_dip_retino.py
+plot.ipynb
+plot_mnist.ipynb
+plot_retino.ipynb
+converg_analysis.ipynb
+comp_sensing_expmt.py
+reconstructions/ajil_chat.txt

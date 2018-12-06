@@ -17,7 +17,7 @@ def parse_args(config_file='configs.json'):
     WD = CONFIG["weight_decay"]
     NUM_ITER = CONFIG["number_iterations"]
     NUM_RESTARTS = CONFIG["number_restarts"]
-    LMBD = CONFIG["lambda"]
+    LMBD = CONFIG["lambda"] # lasso hparam
     parser = argparse.ArgumentParser()
     parser.add_argument('--DEMO', type=str, default=DEMO, \
             help='demo, boolean. Set True to run method over subset of 5 images \

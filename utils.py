@@ -132,20 +132,8 @@ def plot(x,renormalize=True):
         plt.imshow(x.data[0].cpu().numpy(), cmap='gray')
 
 
-''' # early stopping based on convergence - insert in inner loop of cs_dip.py to implement
-# BEGIN_CHECKPOINT = 50 # iteration at which to begin checking exit condition
-# EXIT_WINDOW = 25 # number of consecutive MSE values upon which we compare
-if (i >= BEGIN_CHECKPOINT): # if optimzn has converged, exit descent
-    should_exit, loss_min_restart = utils.exit_check(loss_temp[-EXIT_WINDOW:],i)
-    if should_exit == True:
-        meas_loss = loss_min_restart # get first loss value of exit window
-        break
-else:
-    should_exit = False
-#loss_temp.append(meas_loss) # save loss value of each iteration to array
-'''
-exit_window = 25 # number of consecutive MSE values upon which we compare
-thresh_ratio = 20 # number of MSE values that must be larger for us to exit
+exit_window = 50 # number of consecutive MSE values upon which we compare
+thresh_ratio = 45 # number of MSE values that must be larger for us to exit
 def exit_check(window, i): # if converged, then exit current experiment
     mse_base = window[0] # get first mse value in window
     
@@ -180,7 +168,7 @@ def set_dtype(CUDA):
 
 def get_path_out(args, path_in):
     fn = path_leaf(path_in[0]) # format filename from path
-    if args.BASIS == 'bm3d':
+    if args.BASIS == 'bm3d' or args.BASIS == 'tval3':
         path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.mat'.format( \
             args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
     else:
@@ -206,7 +194,6 @@ def recons_exists(args, path_in):
 def save_reconstruction(x_hat, args, path_in):
 
     path_out = get_path_out(args, path_in)
-
 
     if not os.path.exists(os.path.dirname(path_out)):
         try:
