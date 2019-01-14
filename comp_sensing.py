@@ -21,7 +21,6 @@ NUM_MEASUREMENTS_LIST, BASIS_LIST = utils.convert_to_list(args)
 dataloader = utils.get_data(args) # get dataset of images over which to iterate
 
 for num_measurements in NUM_MEASUREMENTS_LIST:
-
     args.NUM_MEASUREMENTS = num_measurements
     '''
     if args.LEARNED_REG:
@@ -31,16 +30,15 @@ for num_measurements in NUM_MEASUREMENTS_LIST:
         args.LEARNED_REG_SIGMA_PATH = os.path.join(args.LR_FOLDER,LR_SIGMA_FILENAME)
     '''
     
-    A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
-
-
+    A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS,args)
+    y_err = dict()
     for _, (batch, _, im_path) in enumerate(dataloader):
-
+        
         x = batch.view(1,-1).cpu().numpy() #for larger batch, change first arg of .view()
         y = np.dot(x,A)
-
+        args.x = x
         for basis in BASIS_LIST:
-
+            y_err = []
             args.BASIS = basis
 
             if utils.recons_exists(args, im_path): # if reconstruction exists for a given config
@@ -53,13 +51,16 @@ for num_measurements in NUM_MEASUREMENTS_LIST:
                 estimator = baselines.lasso_dct_estimator(args)
             elif basis == 'wavelet':
                 estimator = baselines.lasso_wavelet_estimator(args)
+            elif basis == 'lasso-fourier':
+                assert args.MEASUREMENT == 'fourier', 'MEASUREMENT must be fourier'
+                estimator = baselines.lasso_fourier_estimator(args)
             else:
                 raise NotImplementedError
 
             x_hat = estimator(A, y, args) # new function call to save converg for each img
-
+            y_err.append((1./num_measurements)*(np.linalg.norm(np.dot(x_hat,A)-y)**2))
             utils.save_reconstruction(x_hat, args, im_path)
-
+        
 if NEW_RECONS == False:
     print('Duplicate reconstruction configurations. No new data generated.')
 else:

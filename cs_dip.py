@@ -48,15 +48,17 @@ def dip_estimator(args):
 
 
             # set random seed value to get same z -- only use when tuning hparams
-            torch.manual_seed(1)
-            torch.cuda.manual_seed(seed_val)
+            #torch.manual_seed(1)
+            #torch.cuda.manual_seed(1)
 
             z = torch.zeros(BATCH_SIZE*args.Z_DIM).type(dtype).view(BATCH_SIZE,args.Z_DIM,1,1)
             z.data.normal_().type(dtype)
             if CUDA:
                 net.cuda()
             
+#            optim = torch.optim.SGD(net.parameters(),lr=args.LR, momentum=args.MOM, weight_decay=args.WD)
             optim = torch.optim.RMSprop(net.parameters(),lr=args.LR, momentum=args.MOM, weight_decay=args.WD)
+            #optim = torch.optim.Adam(net.parameters(),lr=args.LR)
             loss_temp = []
 
             # variables for saving recons of last 50 iterations
@@ -69,7 +71,7 @@ def dip_estimator(args):
                 net_measurements = torch.matmul(net(z).view(BATCH_SIZE,-1),A)
                 y_loss = torch.mean(torch.sum(se(net_measurements,y),dim=1))
 
-                tv_loss = 1e-2 * \
+                tv_loss = args.LMBD_TV* \
                         (torch.sum(torch.abs(net(z)[:, :, :, :-1] - net(z)[:, :, :, 1:]))\
                         +torch.sum(torch.abs(net(z)[:, :, :-1, :] - net(z)[:, :, 1:, :]))) 
                 if args.LEARNED_REG:
@@ -78,25 +80,28 @@ def dip_estimator(args):
                 else:
                     total_loss = y_loss + tv_loss  
  
-
+                '''
                 if i >= args.NUM_ITER - EXIT_WINDOW:
                     recons_iter.append(net(z).data.cpu().numpy()) # save reconstr'n for that iter'n
                     loss_temp.append(total_loss.data.cpu().numpy()) # save loss value of each iteration to array
                     if i == args.NUM_ITER - 1: # if at last iteration in loop
                         iter_best = np.argmin(loss_temp)
-
+                '''
 
                 meas_loss = y_loss.data.cpu().numpy()
-
+                if (i+1)%50==0:
+                    print(meas_loss,(np.linalg.norm(net(z)[0][0].data.cpu().numpy().ravel()-args.x))**2/65536.) 
                 total_loss.backward()
                 optim.step()
-
+        '''
             reconstructions_[j] = recons_iter[iter_best] # get best reconstruction over last 20 iterations       
             meas_loss_[j] = meas_loss
-
+        
+            
         idx_best = np.argmin(meas_loss_,axis=0) # index of restart with lowest loss
         x_hat = reconstructions_[idx_best] # choose best reconstruction from all restarts
-
+        '''
+        x_hat = net(z).data.cpu().numpy()
         return x_hat
 
     return estimator

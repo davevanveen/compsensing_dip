@@ -3,12 +3,16 @@
 		"demo": "True",
 		"dataset": "xray",
 		"basis": "csdip",
-		"learning_rate": 0.001,
+		"measurement": "gaussian",
+    "learning_rate": 0.001,
 		"momentum": 0.9,
-   	    "weight_decay": 0,
+   	"weight_decay": 0,
 		"number_iterations": 2000,
 		"number_restarts": 1,
-    	"lambda":1e-5
+    "lambda":1e-5,
+    "lambda_tv":1e-2,
+    "optimizer": "rms",
+    "model": "dcgan"
 	},
 	"xray": {
 		"img_size": 256,

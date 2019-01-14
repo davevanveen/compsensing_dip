@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from torchvision import datasets,transforms
-
+from scipy import fftpack
 BATCH_SIZE = 1
 
 class DCGAN_XRAY(nn.Module):
@@ -169,15 +169,21 @@ def set_dtype(CUDA):
 def get_path_out(args, path_in):
     fn = path_leaf(path_in[0]) # format filename from path
     if args.BASIS == 'bm3d' or args.BASIS == 'tval3':
-        path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.mat'.format( \
-            args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+        path_out = 'reconstructions/{4}/{0}/{1}/meas{2}/im{3}.mat'.format( \
+                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn, args.MEASUREMENT)
+        #path_out = 'reconstructions/{0}/{1}/{2}/meas{3}/{5}_{6}_{7}_{8}_{9}_{10}/im{4}.mat'.format( \
+        #    args.MEASUREMENT, args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn, args.LR, args.MOM, args.LMBD_TV, args.LMBD, args.OPTIMIZER,args.MODEL)
     else:
         if args.LEARNED_REG and args.BASIS=='csdip':
-            path_out = 'reconstructions/{0}/{1}lr/meas{2}/im{3}.npy'.format( \
-                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+            path_out = 'reconstructions/{0}/{1}/{2}lr/meas{3}/{4}_{5}_{6}_{7}_{8}/im{9}.npy'.format( \
+                args.MEASUREMENT, args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, args.LR, args.MOM, args.LMBD_TV, args.LMBD, args.OPTIMIZER,args.MODEL,fn)
+            #path_out = 'reconstructions/{4}/{0}/{1}lr/meas{2}/im{3}.npy'.format( \
+            #    args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn, args.MEASUREMENT)
         else:
-            path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
-                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+            path_out = 'reconstructions/{0}/{1}/{2}/meas{3}/{4}_{5}_{6}_{7}_{8}/im{9}.npy'.format( \
+                args.MEASUREMENT, args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, args.LR, args.MOM, args.LMBD_TV, args.LMBD, args.OPTIMIZER, fn)
+            #path_out = 'reconstructions/{4}/{0}/{1}/meas{2}/im{3}.npy'.format( \
+            #    args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn, args.MEASUREMENT)
     full_path = os.getcwd()  + '/' + path_out
     return full_path
 
@@ -229,7 +235,9 @@ def convert_to_list(args): # returns list for NUM_MEAS, BATCH
         BASIS_LIST = [args.BASIS]
     else:
         BASIS_LIST = args.BASIS
+    
     return NUM_MEASUREMENTS_LIST, BASIS_LIST
+
 
 def path_leaf(path):
     # if '/' in path and if '\\' in path:
@@ -274,3 +282,56 @@ class ImageFolderWithPaths(datasets.ImageFolder):
         tuple_with_path = (original_tuple + (path,))
 
         return tuple_with_path      
+
+def fourier_measurements(num_measurements, N):
+    indices = LineMask(num_measurements, N) 
+    zeros = np.zeros((N,N))
+    A_fourier = np.zeros((N**2,indices[0].shape[0]*2+1))
+    dc = np.zeros((N,N))
+    dc[0,0] = 1.
+    A_fourier[:,0] = np.real(N* fftpack.ifft2(dc).ravel())
+    count = 0
+    for i,j in zip(indices[0],indices[1]):
+
+        temp = zeros.copy()
+        temp[i,j] = 1.
+        
+        fft = N * fftpack.ifft2(temp).ravel()
+
+        A_fourier[:,2*count+1] = np.sqrt(1/2.)* np.real(fft)
+        A_fourier[:,2*count+2] = np.sqrt(1/2.)* np.imag(fft)
+        count += 1
+    return A_fourier
+        
+def LineMask(L,N):
+    thc = np.linspace(0, np.pi-np.pi/L, L)
+    
+    M = np.zeros((N,N));
+
+    # full mask
+    for ll in range(L):
+
+        if ( thc[ll] <= np.pi/4 or thc[ll] > 3*np.pi/4):
+            yr = np.int32(np.round(np.tan(thc[ll])*np.arange(-N/2+1,N/2))+N/2)
+            for nn in range(N-1):
+                M[yr[nn],nn+1] = 1
+        else:
+            xc = np.int32(np.round((1./np.tan(thc[ll]))*np.arange(-N/2+1,N/2))+N/2)
+            for nn in range(N-1):
+                M[nn+1,xc[nn]] = 1
+
+
+
+    # upper half plane mask (not including origin)
+    Mh = np.zeros(N)
+    Mh = M
+    Mh[N/2+1:,:] = 0
+    Mh[N/2,N/2:] = 0
+
+
+    M = np.fft.ifftshift(M)
+    mi = np.where(M>0)
+    Mh = np.fft.ifftshift(Mh)
+    mhi = np.where(Mh>0)
+    return mhi        
+    

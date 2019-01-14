@@ -3,6 +3,8 @@ import scipy.fftpack as fftpack
 import pywt
 import copy
 import numpy as np
+import utils
+import os
 
 def solve_lasso(A_val, y_val, lmbd=1e-1):
     num_measurements = y_val.shape[0]
@@ -40,6 +42,17 @@ def devec(vector,num_channels):
     channels = [image[:, :, i] for i in range(num_channels)]
     return channels
 
+def lasso_fourier_estimator(args):  #pylint: disable = W0613
+    """ LASSO with fourier coefficients"""
+    def estimator(A_val, y_batch_val, args):
+        A_new = copy.deepcopy(A_val)
+
+        y_val = y_batch_val[0]
+        x_hat = solve_lasso(A_new, y_val, args.LMBD)
+        x_hat = np.maximum(np.minimum(x_hat, 1), -1)
+        return x_hat
+    return estimator
+
 def lasso_dct_estimator(args):  #pylint: disable = W0613
     """LASSO with DCT"""
     def estimator(A_val, y_batch_val, args):
@@ -73,6 +86,22 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
         return x_hat
     return estimator
 
-def get_A(dimension,num_measurements):
-    np.random.seed(1) # set random seed value to get same A -- only use when tuning hparams
-    return np.sqrt(1.0/num_measurements)*np.random.randn(dimension,num_measurements)
+
+
+def get_A(dimension,num_measurements,args):
+    #np.random.seed(1) # set random seed value to get same A -- only use when tuning hparams
+    if args.MEASUREMENT == 'gaussian':
+        return np.sqrt(1.0/num_measurements)*np.random.randn(dimension,num_measurements)
+    
+    elif args.MEASUREMENT == 'fourier':
+        filename = '../measurement_matrices/fourier_{0}.npy'.format(num_measurements)
+        if os.path.exists(filename):
+            A = np.load(filename)
+        else:
+            A = utils.fourier_measurements(num_measurements, args.IMG_SIZE)
+            if not os.path.exists(os.path.dirname(filename)):
+                os.mkdir(os.path.dirname(filename))
+            np.save(filename,A)
+        return A
+
+
