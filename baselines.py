@@ -94,7 +94,7 @@ def get_A(dimension,num_measurements,args):
         return np.sqrt(1.0/num_measurements)*np.random.randn(dimension,num_measurements)
     
     elif args.MEASUREMENT == 'fourier':
-        filename = '../measurement_matrices/fourier_{0}.npy'.format(num_measurements)
+        filename = './measurement_matrices/fourier_{0}.npy'.format(num_measurements)
         if os.path.exists(filename):
             A = np.load(filename)
         else:

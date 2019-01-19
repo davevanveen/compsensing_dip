@@ -58,7 +58,7 @@ for num_measurements in NUM_MEASUREMENTS_LIST:
                 raise NotImplementedError
 
             x_hat = estimator(A, y, args) # new function call to save converg for each img
-            y_err.append((1./num_measurements)*(np.linalg.norm(np.dot(x_hat,A)-y)**2))
+            #y_err.append((1./num_measurements)*(np.linalg.norm(np.dot(x_hat,A)-y)**2))
             utils.save_reconstruction(x_hat, args, im_path)
         
 if NEW_RECONS == False:

@@ -325,8 +325,8 @@ def LineMask(L,N):
     # upper half plane mask (not including origin)
     Mh = np.zeros(N)
     Mh = M
-    Mh[N/2+1:,:] = 0
-    Mh[N/2,N/2:] = 0
+    Mh[N//2+1:,:] = 0
+    Mh[N//2,N//2:] = 0
 
 
     M = np.fft.ifftshift(M)
