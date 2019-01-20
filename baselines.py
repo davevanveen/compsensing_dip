@@ -29,15 +29,15 @@ def idb4(image_channel, coeff_slices):
 
 def vec(channels,num_channels):
     shape = channels[0].shape
-    image = np.zeros((shape[0], shape[1], num_channels))
+    image = np.zeros((num_channels, shape[0], shape[1]))
     for i, channel in enumerate(channels):
-        image[:, :, i] = channel
+        image[i, :, :] = channel
     return image.reshape([-1])
 
 def devec(vector,num_channels):
     size = int(np.sqrt(vector.shape[0]/num_channels))
-    image = np.reshape(vector, [size, size, num_channels])
-    channels = [image[:, :, i] for i in range(num_channels)]
+    image = np.reshape(vector, [num_channels, size, size])
+    channels = [image[i, :, :] for i in range(num_channels)]
     return channels
 
 def lasso_dct_estimator(args):  #pylint: disable = W0613
@@ -46,7 +46,7 @@ def lasso_dct_estimator(args):  #pylint: disable = W0613
         # One can prove that taking 2D DCT of each row of A,
         # then solving usual LASSO, and finally taking 2D ICT gives the correct answer.
         A_new = copy.deepcopy(A_val)
-        for i in range(A_val.shape[1]):
+	for i in range(A_val.shape[1]):
             A_new[:, i] = vec([dct2(channel) for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
 
         y_val = y_batch_val[0]
@@ -63,7 +63,7 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
         # then solving usual LASSO, and finally taking 2D IWT gives the correct answer.
         A_new = copy.deepcopy(A_val)
         arr, coeff_slices = db4(devec(A_new[:,0],args.NUM_CHANNELS)[0])
-        A_wav = np.zeros((arr.shape[0]*arr.shape[1],A_val.shape[1]))
+        A_wav = np.zeros((args.NUM_CHANNELS*arr.shape[0]*arr.shape[1],A_val.shape[1]))
         for i in range(A_val.shape[1]):
             A_wav[:, i] = vec([db4(channel)[0] for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
         y_val = y_batch_val[0]
