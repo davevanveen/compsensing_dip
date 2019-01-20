@@ -5,6 +5,7 @@ import copy
 import numpy as np
 import utils
 import os
+from scipy import io
 
 def solve_lasso(A_val, y_val, lmbd=1e-1):
     num_measurements = y_val.shape[0]
@@ -95,6 +96,7 @@ def get_A(dimension,num_measurements,args):
     
     elif args.MEASUREMENT == 'fourier':
         filename = './measurement_matrices/fourier_{0}.npy'.format(num_measurements)
+        filename_mat = './measurement_matrices/fourier_{0}.mat'.format(num_measurements)
         if os.path.exists(filename):
             A = np.load(filename)
         else:
@@ -102,6 +104,8 @@ def get_A(dimension,num_measurements,args):
             if not os.path.exists(os.path.dirname(filename)):
                 os.mkdir(os.path.dirname(filename))
             np.save(filename,A)
+	    A_dict = {'M': A.T}
+	    io.savemat(filename_mat, A_dict)
         return A
 
 

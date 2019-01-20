@@ -6,9 +6,10 @@
 clear all
 
 home_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/';
-bm3d_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/BM3D';
-utils_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/Utils';
-data_path = '~/work/compsensing_dip/data/xray/sub';
+bm3d_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/BM3D/';
+utils_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/Utils/';
+data_path = '~/work/compsensing_dip/data/xray/sub/';
+matrices_path = '~/work/compsensing_dip/measurement_matrices/';
 addpath(genpath(bm3d_path));
 addpath(genpath(utils_path));
 addpath(genpath(data_path));
@@ -24,7 +25,7 @@ num_images = 60;
 imsize=256;
 num_pixels = imsize^2;
 %num_meas_list = [10, 15, 25, 35, 50, 75, 100, 200]; %mnist
-num_meas_list = [500, 1000]; %xray
+num_meas_list = [5]; %xray
 samp_rate_list = num_meas_list ./ num_pixels;
 
 for ii=1:num_images
@@ -44,11 +45,14 @@ for ii=1:num_images
         SamplingRate = samp_rate_list(jj);
         m=round(n*SamplingRate)
         
-        M=randn(m,n); % generate random gaussian meas. matrix
-        for j = 1:n
-            M(:,j) = M(:,j) ./ sqrt(sum(abs(M(:,j)).^2));
-        end
-        y=M*x_0(:); % compressively sample image
+        %M=randn(m,n); % generate random gaussian meas. matrix
+        %for j = 1:n
+        %    M(:,j) = M(:,j) ./ sqrt(sum(abs(M(:,j)).^2));
+        %end
+	matrix_path_in = strcat(matrices_path, 'fourier_',num2str(num_meas_list(jj)),'.mat');
+	M = load(matrix_path_in);
+	M = M.M;
+	y=M*x_0(:); % compressively sample image
 	
         %Recover Signal using D-AMP algorithms
 	cd(home_path)        
