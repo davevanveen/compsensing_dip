@@ -5,9 +5,10 @@
 
 clear all
 
-bm3d_path = '/home/dave/Documents/comp_sensing/cs_dip/csdip_code/cs_dip/D-AMP_Toolbox-master/Demos/BM3D';
-utils_path = '/home/dave/Documents/comp_sensing/cs_dip/csdip_code/cs_dip/D-AMP_Toolbox-master/Demos/Utils';
-data_path = '/home/dave/Documents/comp_sensing/cs_dip/csdip_code/cs_dip/icml_push/data/xray/sub';
+home_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/';
+bm3d_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/BM3D';
+utils_path = '~/work/compsensing_dip/baselines_matlab/bm3d_baseline/Utils';
+data_path = '~/work/compsensing_dip/data/xray/sub';
 addpath(genpath(bm3d_path));
 addpath(genpath(utils_path));
 addpath(genpath(data_path));
@@ -23,7 +24,7 @@ num_images = 60;
 imsize=256;
 num_pixels = imsize^2;
 %num_meas_list = [10, 15, 25, 35, 50, 75, 100, 200]; %mnist
-num_meas_list = [500, 1000, 1500, 2000, 4000, 8000]; %xray
+num_meas_list = [500, 1000]; %xray
 samp_rate_list = num_meas_list ./ num_pixels;
 
 for ii=1:num_images
@@ -38,9 +39,7 @@ for ii=1:num_images
     n=length(x_0(:));
 
     for jj=1:length(num_meas_list)
-        path_data_out = strcat('~/Documents/comp_sensing/cs_dip/csdip_code/cs_dip', ...
-        '/icml_push/reconstructions/xray/bm3d/meas', num2str(num_meas_list(jj)), sprintf('/'));
-        cd(path_data_out);
+
     
         SamplingRate = samp_rate_list(jj);
         m=round(n*SamplingRate)
@@ -50,9 +49,13 @@ for ii=1:num_images
             M(:,j) = M(:,j) ./ sqrt(sum(abs(M(:,j)).^2));
         end
         y=M*x_0(:); % compressively sample image
-
+	
         %Recover Signal using D-AMP algorithms
-        x_hat = DAMP(y,iters,height,width,denoiser1,M);
+	cd(home_path)        
+	x_hat = DAMP(y,iters,height,width,denoiser1,M);
+        
+	path_data_out = strcat('~/work/compsensing_dip/reconstructions/xray/bm3d/meas', num2str(num_meas_list(jj)), sprintf('/'));
+        cd(path_data_out);
         
         save(fn_out, 'x_hat');
     end
