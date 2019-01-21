@@ -25,7 +25,7 @@ num_images = 60;
 imsize=256;
 num_pixels = imsize^2;
 %num_meas_list = [10, 15, 25, 35, 50, 75, 100, 200]; %mnist
-num_meas_list = [5]; %xray
+num_meas_list = [3]; %xray
 samp_rate_list = num_meas_list ./ num_pixels;
 
 for ii=1:num_images
