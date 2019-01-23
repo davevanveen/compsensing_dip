@@ -1,11 +1,9 @@
 *.pyc
 *.py.swp*
 *.ipynb*
-/reconstructions
 cs_dip_mnist.py
 cs_dip_retino.py
 cs_dip_xray.py
-plot.ipynb
 plot_mnist.ipynb
 plot_retino.ipynb
 plot_xray.ipynb
