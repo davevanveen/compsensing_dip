@@ -31,7 +31,6 @@ class DCGAN_XRAY(nn.Module):
         self.bn6 = nn.BatchNorm2d(ngf)
         self.conv7 = nn.ConvTranspose2d(ngf, nc, 4, 2, 1, bias=False) #output is image
     
-    
     def forward(self, z):
         input_size = z.size()
         x = F.relu(self.bn1(self.conv1(z)))
@@ -49,7 +48,6 @@ class DCGAN_MNIST(nn.Module):
         super(DCGAN_MNIST, self).__init__()
         self.nc = nc
         self.output_size = output_size
-
 
         self.conv1 = nn.ConvTranspose2d(nz, ngf*8, 2, 1, 0, bias=False)
         self.bn1 = nn.BatchNorm2d(ngf*8)
@@ -71,7 +69,7 @@ class DCGAN_MNIST(nn.Module):
         # x = F.upsample(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
         # x = F.upsample(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
         # x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
-
+        
         x = F.interpolate(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.interpolate(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
@@ -97,7 +95,7 @@ class DCGAN_RETINO(nn.Module):
         self.conv5 = nn.ConvTranspose2d(ngf, ngf, 6, 2, 2, bias=False)
         self.bn5 = nn.BatchNorm2d(ngf)
         self.conv6 = nn.ConvTranspose2d(ngf, nc, 4, 2, 1, bias=False)
-        #self.fc = nn.Linear((output_size)*(output_size)*nc,num_measurements, bias=False) #output is A
+        #self.fc = nn.Linear((output_size)*(output_size)*nc,num_measurements, bias=False) #fc layer - old version
    
     def forward(self, x):
         input_size = x.size()
@@ -125,11 +123,6 @@ def init_dcgan(args):
 
 lambdas_tv = {'mnist': 1e-2, 'xray': 5e-2, 'retino': 2e-2}
 lambdas_lr = {'mnist': 0, 'xray': 100, 'retino': 1000}
-
-
-    
-
-
 def get_constants(args, dtype):
     MU_FN = 'mu_{0}.npy'.format(args.NUM_MEASUREMENTS)
     MU_PATH = os.path.join(args.LR_FOLDER,MU_FN)
@@ -274,7 +267,6 @@ def get_data(args):
     dataloader = torch.utils.data.DataLoader(dataset, shuffle=False, batch_size=BATCH_SIZE)
 
     return dataloader
-
 
 class ImageFolderWithPaths(datasets.ImageFolder):
     """Custom dataset that includes image file paths. Extends

@@ -142,7 +142,6 @@ def plot_image(image, args, flag):
 		raise ValueError('flag input must be orig or recons for plotting original image or reconstruction, respectively.')
 
 
-
 ### UNUSED FUNCTIONS BELOW ###
 # from PIL import Image
 def classify(rgb_tuple):
