@@ -64,11 +64,14 @@ class DCGAN_MNIST(nn.Module):
     
     def forward(self, x):
         input_size = x.size()
+
+        # DCGAN_MNIST with old PyTorch version
         # x = F.upsample(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
         # x = F.relu(self.bn2(self.conv2(x)))
         # x = F.upsample(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
         # x = F.upsample(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
         # x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
+
         x = F.interpolate(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.interpolate(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
@@ -106,6 +109,7 @@ class DCGAN_RETINO(nn.Module):
         x = torch.tanh(self.conv6(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
        
         return x
+
 NGF = 64
 def init_dcgan(args):
     if args.DATASET == 'xray':
@@ -118,9 +122,27 @@ def init_dcgan(args):
         net = DCGAN_RETINO(args.Z_DIM, NGF, args.IMG_SIZE,\
             args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
     return net
-   
-def norm(x):
-    return x*2.0 - 1.0
+
+lambdas_tv = {'mnist': 1e-2, 'xray': 5e-2, 'retino': 2e-2}
+lambdas_lr = {'mnist': 0, 'xray': 100, 'retino': 1000}
+
+
+    
+
+
+def get_constants(args, dtype):
+    MU_FN = 'mu_{0}.npy'.format(args.NUM_MEASUREMENTS)
+    MU_PATH = os.path.join(args.LR_FOLDER,MU_FN)
+    SIG_FN = "sig_{0}.npy".format(args.NUM_MEASUREMENTS)
+    SIG_PATH = os.path.join(args.LR_FOLDER,SIG_FN)
+    mu_ = np.load(MU_PATH)
+    sig_ = np.load(SIG_PATH)
+
+    mu = torch.FloatTensor(mu_).type(dtype)
+    sig_inv = torch.FloatTensor(np.linalg.inv(sig_)).type(dtype)
+    tvc = lambdas_tv[args.DATASET]
+    lrc = lambdas_lr[args.DATASET]
+    return mu, sig_inv, tvc, lrc
 
 def renorm(x):
     return 0.5*x + 0.5
@@ -168,16 +190,15 @@ def set_dtype(CUDA):
 
 def get_path_out(args, path_in):
     fn = path_leaf(path_in[0]) # format filename from path
-    if args.BASIS == 'bm3d' or args.BASIS == 'tval3':
-        path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.mat'.format( \
-            args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+
+    if args.ALG == 'bm3d' or args.ALG == 'tval3':
+        file_ext = 'mat' # if algorithm is implemented in matlab
     else:
-        if args.LEARNED_REG and args.BASIS=='csdip':
-            path_out = 'reconstructions/{0}/{1}lr/meas{2}/im{3}.npy'.format( \
-                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
-        else:
-            path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.npy'.format( \
-                args.DATASET, args.BASIS, args.NUM_MEASUREMENTS, fn)
+        file_ext = 'npy' # if algorithm is implemented in python
+
+    path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.{4}'.format( \
+            args.DATASET, args.ALG, args.NUM_MEASUREMENTS, fn, file_ext)
+
     full_path = os.getcwd()  + '/' + path_out
     return full_path
 
@@ -190,9 +211,7 @@ def recons_exists(args, path_in):
     else:
         return False
 
-# TODO: add filename of image to args so that multiple images can be written to same direc
 def save_reconstruction(x_hat, args, path_in):
-
     path_out = get_path_out(args, path_in)
 
     if not os.path.exists(os.path.dirname(path_out)):
@@ -225,11 +244,11 @@ def convert_to_list(args): # returns list for NUM_MEAS, BATCH
         NUM_MEASUREMENTS_LIST = [args.NUM_MEASUREMENTS]
     else:
         NUM_MEASUREMENTS_LIST = args.NUM_MEASUREMENTS
-    if not isinstance(args.BASIS, list):
-        BASIS_LIST = [args.BASIS]
+    if not isinstance(args.ALG, list):
+        ALG_LIST = [args.ALG]
     else:
-        BASIS_LIST = args.BASIS
-    return NUM_MEASUREMENTS_LIST, BASIS_LIST
+        ALG_LIST = args.ALG
+    return NUM_MEASUREMENTS_LIST, ALG_LIST
 
 def path_leaf(path):
     # if '/' in path and if '\\' in path:
@@ -244,7 +263,6 @@ def path_leaf(path):
     return tail or os.path.basename(head)
 
 def get_data(args):
-
     compose = define_compose(args.NUM_CHANNELS, args.IMG_SIZE)
 
     if args.DEMO == 'True':
@@ -257,8 +275,6 @@ def get_data(args):
 
     return dataloader
 
-def renorm_bm3d(x): # maps [0,256] output from .mat file to [-1,1] for conistency 
-    return .0078125*x - 1
 
 class ImageFolderWithPaths(datasets.ImageFolder):
     """Custom dataset that includes image file paths. Extends

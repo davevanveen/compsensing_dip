@@ -1,35 +1,30 @@
 % Demonstrates compressively sampling and TVAL3 recovery of an image.
+clear all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTE: Currently this code requires user setting variables
+%       and ensuring the current path is correct.
+%       All user input is contained within this section.
 
-% NOTE: Need to fix absolute paths, add user-specified arguments
-%      i.e. code not currently user-friendly 
+% current path should be ../baselines_matlab/tval3_baseline
+base_direc = pwd;
 
-clear all; close all;
+%Parameters - user must ensure these are correct
+dataset = 'xray'; % 'xray' or 'mnist'
+imsize = 256; % imsize: {mnist: 28, xray: 256}
 
-rgb = true;
-
-path(path,genpath(pwd));
-data_path = '/home/dave/Documents/comp_sensing/cs_dip/csdip_code/cs_dip/repo_public/data/retino/sub';
-tval3_path = '/home/dave/Documents/comp_sensing/cs_dip/csdip_code/cs_dip/repo_public/baselines_matlab/tval3_baseline';
-addpath(genpath(data_path));
-addpath(genpath(tval3_path));
-cd(data_path)
-imagefiles = dir('*.jpg');
-
-cd(tval3_path)
-
-% params to change
-num_images = 1;
-imsize=128;
-%num_meas_list = [10, 15, 25, 35, 50, 75, 100, 200]; %mnist
-num_meas_list = [500];%, 1000, 2000, 4000, 8000]; %xray
-
+%num_meas_list = [25, 35, 50, 75, 100, 200]; %mnist
+num_meas_list = [500,1000,2000,4000,8000]; %xray
+num_images = 1; % number of images to reconstruct
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 num_pixels = imsize^2;
-if rgb
-    num_pixels = 3*imsize^2;
-end
 samp_rate_list = num_meas_list ./ num_pixels;
 
-% Set TVAL3 params
+path_data_in = '../../data/xray/sub'; 
+cd(path_data_in)
+imagefiles = dir('*.jpg');
+cd(base_direc)
+
+% TVAL3 optimization params
 clear opts
 opts.mu = 2^8;
 opts.beta = 2^5;
@@ -47,16 +42,14 @@ for ii=1:num_images
     
     x_0=imresize(ImIn,imsize/size(ImIn,1));
     [height, width]=size(x_0);
-    if rgb
-        [height,width,depth] = size(x_0);
-    end
     n=length(x_0(:));
 
     for jj=1:length(num_meas_list)
-        path_data_out = strcat('~/Documents/comp_sensing/cs_dip/csdip_code/cs_dip', ...
-        '/repo_public/reconstructions/retino/tval3/meas', num2str(num_meas_list(jj)), sprintf('/'));
-        cd(path_data_out); 
-
+        path_data_out = strcat('../../reconstructions/',dataset,'/tval3/meas', ... 
+            num2str(num_meas_list(jj)), sprintf('/'))
+%         path_data_out = strcat('../../reconstructions/xray/tval3/meas', ... 
+%             num2str(num_meas_list(jj)), sprintf('/'))
+        
         SamplingRate = samp_rate_list(jj);
         m = round(n*SamplingRate);
         M=randn(m,n); % generate random gaussian meas. matrix
@@ -64,12 +57,10 @@ for ii=1:num_images
             M(:,j) = M(:,j) ./ sqrt(sum(abs(M(:,j)).^2));
         end
         y = M*x_0(:);
+        [x_hat,out] = TVAL3(M,y,imsize,imsize,opts);
         
-%         t1 = clock;
-        %[x_hat,out] = TVAL3(M,y,imsize,imsize,opts);
-%         t2 = clock;
-%         e = etime(t2,t1)
-
-        %save(fn_out, 'x_hat');
+        cd(path_data_out); 
+        save(fn_out, 'x_hat');
+        cd (base_direc);
     end
 end

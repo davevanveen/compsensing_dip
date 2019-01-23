@@ -1,6 +1,8 @@
 # Compressed Sensing with Deep Image Prior
 
-This repository provides code to reproduce results from the paper: [Compressed Sensing with Deep Image Prior and Learned Regularization](https://arxiv.org/pdf/1806.06438.pdf). Functionality for the learned regularization method is currently in progress.
+This repository provides code to reproduce results from the paper: [Compressed Sensing with Deep Image Prior and Learned Regularization](https://arxiv.org/pdf/1806.06438.pdf). 
+
+Functionality for the learned regularization method is currently in progress.
 
 Here are a few example results:
 
@@ -48,6 +50,7 @@ MNIST at 100 measurements | X-ray at 4000 measurements
 	$ python comp_sensing.py --DATASET xray --NUM_MEASUREMENTS 2000 4000 8000 --BASIS csdip dct wavelet --NUM_ITER 500
 	```
 
+DELETE THIS?
 Note: To reduce runtime, redundant reconstruction data will not be generated for the same image at the same number of measurements. Thus if you wish to compare reconstructions while varying other parameters (e.g. learning rate, weight decay), your data must be manually relocated to avoid file overwrite.
 
 
@@ -59,6 +62,11 @@ Note: To reduce runtime, redundant reconstruction data will not be generated for
 4. Generate and plot reconstructions according to instructions above.
 
 Note: We recommend experimenting with the DCGAN architecture and dataset parameters to obtain the best possible reconstructions.
+
+
+### Generating learned regularization parameters for a new dataset.
+This functionality will be added soon.
+Since learned regularization is essentially a "more informed" version of l2-regularization,
 
 
 

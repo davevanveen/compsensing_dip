@@ -2,13 +2,11 @@
 *.py.swp*
 *.ipynb*
 /reconstructions
-/data/statistics
-/data/2.png
 cs_dip_mnist.py
 cs_dip_retino.py
+cs_dip_xray.py
 plot.ipynb
 plot_mnist.ipynb
 plot_retino.ipynb
-converg_analysis.ipynb
+plot_xray.ipynb
 comp_sensing_expmt.py
-reconstructions/ajil_chat.txt

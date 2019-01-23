@@ -16,47 +16,39 @@ NEW_RECONS = False
 args = parser.parse_args('configs.json')
 print(args)
 
-NUM_MEASUREMENTS_LIST, BASIS_LIST = utils.convert_to_list(args)
+NUM_MEASUREMENTS_LIST, ALG_LIST = utils.convert_to_list(args)
 
 dataloader = utils.get_data(args) # get dataset of images over which to iterate
 
-for num_measurements in NUM_MEASUREMENTS_LIST:
-
-    args.NUM_MEASUREMENTS = num_measurements
-    '''
-    if args.LEARNED_REG:
-        LR_MU_FILENAME = "mu_{0}.npy".format(num_measurements)
-        args.LEARNED_REG_MU_PATH = os.path.join(args.LR_FOLDER,LR_MU_FILENAME)
-        LR_SIGMA_FILENAME = "sig_{0}.npy".format(num_measurements)
-        args.LEARNED_REG_SIGMA_PATH = os.path.join(args.LR_FOLDER,LR_SIGMA_FILENAME)
-    '''
+for num_meas in NUM_MEASUREMENTS_LIST:
+    args.NUM_MEASUREMENTS = num_meas 
     
     A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
 
-
     for _, (batch, _, im_path) in enumerate(dataloader):
 
-        x = batch.view(1,-1).cpu().numpy() #for larger batch, change first arg of .view()
-        y = np.dot(x,A)
+        x = batch.view(1,-1).cpu().numpy()
 
-        for basis in BASIS_LIST:
-
-            args.BASIS = basis
+        for alg in ALG_LIST:
+            args.ALG = alg
 
             if utils.recons_exists(args, im_path): # if reconstruction exists for a given config
                 continue
             NEW_RECONS = True
 
-            if basis == 'csdip':
+            if alg == 'csdip':
                 estimator = cs_dip.dip_estimator(args)
-            elif basis == 'dct':
+            elif alg == 'dct':
                 estimator = baselines.lasso_dct_estimator(args)
-            elif basis == 'wavelet':
+            elif alg == 'wavelet':
                 estimator = baselines.lasso_wavelet_estimator(args)
+            elif alg == 'bm3d' or alg == 'tval3':
+                raise NotImplementedError('BM3D-AMP and TVAL3 are implemented in Matlab. \
+                                            Please see Github repository for details.')
             else:
                 raise NotImplementedError
 
-            x_hat = estimator(A, y, args) # new function call to save converg for each img
+            x_hat = estimator(A, y, args)
 
             utils.save_reconstruction(x_hat, args, im_path)
 
