@@ -7,10 +7,9 @@ Here are a few example results:
 MNIST at 100 measurements | X-ray at 4000 measurements
 --------------------------|---------------------------
 <!-- <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/xray_sample_4000meas.png" alt="mnist_reconstr" width="450"> -->
-<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/recons_m75.pdf" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/recons_x2000.pdf" alt="mnist_reconstr" width="450">
-        compsensing_dip/reconstructions/xray/recons_x2000.pdf
+<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/samp_recons_m75.png" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/samp_recons_x2000.png" alt="mnist_reconstr" width="450">
+  <!--       compsensing_dip/reconstructions/xray/recons_x2000.pdf -->
       
-
 
 ### Preliminaries
 ---
@@ -32,7 +31,7 @@ MNIST at 100 measurements | X-ray at 4000 measurements
 ---
 1. Open jupyter notebook of plots
     ```shell
-    $ jupyter notebook reconstructions.ipynb
+    $ jupyter notebook plot.ipynb
     ```	
 2. Set the variables ```DATASET``` and ```NUM_MEASUREMENTS_LIST```. Data is provided for NUM_MEASUREMENTS [10, 25, 50, 75, 100] on MNIST and [1000, 2000, 4000, and 8000] on the xray dataset.
 
