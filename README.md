@@ -33,12 +33,12 @@ MNIST at 75 measurements                 | X-ray at 2000 measurements
     ```shell
     $ jupyter notebook plot.ipynb
     ```	
-2. Set variables in the second cell according to interest, i.e. ```DATASET```, ```NUM_MEASUREMENTS_LIST```, and ```ALG_LIST```. Existing data is described in the comments.
+2. Set variables in the second cell according to interest, i.e. ```DATASET```, ```NUM_MEASUREMENTS_LIST```, and ```ALG_LIST```. Existing supported data is described in the comments.
 
 3. Execute cells to view output.
 
 
-### Generating new reconstructions on the MNIST or xray datasets
+### Generating new reconstructions on the MNIST, xray, or retinopathy datasets
 ---
 1. Execute the baseline command
 	```shell
@@ -62,7 +62,7 @@ Note: We recommend experimenting with the DCGAN architecture and dataset paramet
 
 
 ### Generating learned regularization parameters for a new dataset.
-This functionality will be added soon.
+The purpose of this section is to generate a new (\mu, \Sigma) based on layer-wise weights of the DCGAN. This functionality will be added soon.
 
 
 
