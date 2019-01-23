@@ -1,5 +1,6 @@
 *.pyc
 *.py.swp*
+.ipynb_checkpoints/
 cs_dip_mnist.py
 cs_dip_retino.py
 cs_dip_xray.py
