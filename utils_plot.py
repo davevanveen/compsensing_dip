@@ -81,7 +81,6 @@ def set_kwargs():
 def renorm(x):
     return 0.5*x + 0.5
 
-#font = {'fontname': 'Times New Roman'}
 def plot_format(y_lim, args):
     plt.ylim([0,y_lim])
     plt.ylabel('Reconstruction Error')

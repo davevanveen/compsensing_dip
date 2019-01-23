@@ -69,7 +69,7 @@ class DCGAN_MNIST(nn.Module):
         # x = F.upsample(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
         # x = F.upsample(F.relu(self.bn4(self.conv4(x))),scale_factor=2)
         # x = torch.tanh(self.conv5(x,output_size=(-1,self.nc,self.output_size,self.output_size)))
-        
+
         x = F.interpolate(F.relu(self.bn1(self.conv1(x))),scale_factor=2)
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.interpolate(F.relu(self.bn3(self.conv3(x))),scale_factor=2)
@@ -133,8 +133,14 @@ def get_constants(args, dtype):
 
     mu = torch.FloatTensor(mu_).type(dtype)
     sig_inv = torch.FloatTensor(np.linalg.inv(sig_)).type(dtype)
-    tvc = lambdas_tv[args.DATASET]
-    lrc = lambdas_lr[args.DATASET]
+    try:
+        tvc = lambdas_tv[args.DATASET]
+    except AttributeError:
+        tvc = 1e-2
+    try:
+        lrc = lambdas_lr[args.DATASET]
+    except AttributeError:
+        lrc = 0
     return mu, sig_inv, tvc, lrc
 
 def renorm(x):
