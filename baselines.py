@@ -4,8 +4,6 @@ import pywt
 import copy
 import numpy as np
 
-LMBD = 1e-5 # Lasso hyperparameter
-
 def solve_lasso(A_val, y_val, lmbd=1e-1):
     num_measurements = y_val.shape[0]
     lasso_est = Lasso(alpha=lmbd)#,tol=1e-4,selection='random')
@@ -52,7 +50,7 @@ def lasso_dct_estimator(args):  #pylint: disable = W0613
             A_new[:, i] = vec([dct2(channel) for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
 
         y_val = y_batch_val[0]
-        z_hat = solve_lasso(A_new, y_val, LMBD)
+        z_hat = solve_lasso(A_new, y_val, args.LMBD)
         x_hat = vec([idct2(channel) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
         x_hat = np.maximum(np.minimum(x_hat, 1), -1)
         return x_hat
@@ -69,7 +67,7 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
         for i in range(A_val.shape[1]):
             A_wav[:, i] = vec([db4(channel)[0] for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
         y_val = y_batch_val[0]
-        z_hat = solve_lasso(A_wav, y_val, LMBD)
+        z_hat = solve_lasso(A_wav, y_val, args.LMBD)
         x_hat = vec([idb4(channel,coeff_slices) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
         x_hat = np.maximum(np.minimum(x_hat, 1), -1)
         return x_hat
