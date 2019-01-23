@@ -6,9 +6,7 @@ Here are a few example results:
 
 MNIST at 75 measurements                 | X-ray at 2000 measurements
 -----------------------------------------|-----------------------------------------
-<!-- <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/xray_sample_4000meas.png" alt="mnist_reconstr" width="450"> -->
 <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/samp_recons_m75.png" alt="mnist_reconstr" width="400"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/samp_recons_x2000.png" alt="mnist_reconstr" width="400">
-  <!--       compsensing_dip/reconstructions/xray/recons_x2000.pdf -->
       
 
 ### Preliminaries
@@ -33,7 +31,7 @@ MNIST at 75 measurements                 | X-ray at 2000 measurements
     ```shell
     $ jupyter notebook plot.ipynb
     ```	
-2. Set variables in the second cell according to interest, i.e. ```DATASET```, ```NUM_MEASUREMENTS_LIST```, and ```ALG_LIST```. Existing supported data is described in the comments.
+2. Set variables in the second cell according to interest, e.g. ```DATASET```, ```NUM_MEASUREMENTS_LIST```, ```ALG_LIST```. Existing supported data is described in the comments.
 
 3. Execute cells to view output.
 
@@ -61,7 +59,8 @@ MNIST at 75 measurements                 | X-ray at 2000 measurements
 Note: We recommend experimenting with the DCGAN architecture and dataset parameters to obtain the best possible reconstructions.
 
 
-### Generating learned regularization parameters for a new dataset.
+### Generating learned regularization parameters for a new dataset
+---
 The purpose of this section is to generate a new (\mu, \Sigma) based on layer-wise weights of the DCGAN. This functionality will be added soon.
 
 
