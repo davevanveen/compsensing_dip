@@ -2,13 +2,15 @@
 
 This repository provides code to reproduce results from the paper: [Compressed Sensing with Deep Image Prior and Learned Regularization](https://arxiv.org/pdf/1806.06438.pdf). 
 
-Functionality for the learned regularization method is currently in progress.
-
 Here are a few example results:
 
 MNIST at 100 measurements | X-ray at 4000 measurements
 --------------------------|---------------------------
-<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/xray_sample_4000meas.png" alt="mnist_reconstr" width="450">
+<!-- <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/mnist_sample_100meas.png" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/xray_sample_4000meas.png" alt="mnist_reconstr" width="450"> -->
+<img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/mnist/recons_m75.pdf" alt="mnist_reconstr" width="450"> | <img src="https://github.com/davevanveen/compsensing_dip/blob/master/reconstructions/xray/recons_x2000.pdf" alt="mnist_reconstr" width="450">
+        compsensing_dip/reconstructions/xray/recons_x2000.pdf
+      
+
 
 ### Preliminaries
 ---
