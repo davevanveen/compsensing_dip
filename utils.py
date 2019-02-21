@@ -121,6 +121,12 @@ def init_dcgan(args):
             args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
     return net
 
+def init_output_arrays(args):
+    loss_re = np.zeros((args.NUM_RESTARTS, BATCH_SIZE))
+    recons_re = np.zeros((args.NUM_RESTARTS, BATCH_SIZE, args.NUM_CHANNELS, \
+                    args.IMG_SIZE, args.IMG_SIZE))
+    return loss_re, recons_re
+
 lambdas_tv = {'mnist': 1e-2, 'xray': 5e-2, 'retino': 2e-2}
 lambdas_lr = {'mnist': 0, 'xray': 100, 'retino': 1000}
 def get_constants(args, dtype):

@@ -18,21 +18,22 @@ print(args)
 
 NUM_MEASUREMENTS_LIST, ALG_LIST = utils.convert_to_list(args)
 
-dataloader = utils.get_data(args) # get dataset of images over which to iterate
+dataloader = utils.get_data(args) # get dataset of images
 
 for num_meas in NUM_MEASUREMENTS_LIST:
     args.NUM_MEASUREMENTS = num_meas 
     
+    # init measurement matrix
     A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
 
     for _, (batch, _, im_path) in enumerate(dataloader):
 
-        x = batch.view(1,-1).cpu().numpy()
+        x = batch.view(1,-1).cpu().numpy() # define image
 
         for alg in ALG_LIST:
             args.ALG = alg
 
-            if utils.recons_exists(args, im_path): # if reconstruction exists for a given config
+            if utils.recons_exists(args, im_path): # to avoid redundant reconstructions
                 continue
             NEW_RECONS = True
 
@@ -44,7 +45,7 @@ for num_meas in NUM_MEASUREMENTS_LIST:
                 estimator = baselines.lasso_wavelet_estimator(args)
             elif alg == 'bm3d' or alg == 'tval3':
                 raise NotImplementedError('BM3D-AMP and TVAL3 are implemented in Matlab. \
-                                            Please see Github repository for details.')
+                                            Please see GitHub repository for details.')
             else:
                 raise NotImplementedError
 

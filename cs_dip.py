@@ -15,9 +15,7 @@ se = torch.nn.MSELoss(reduction='none').type(dtype)
 
 BATCH_SIZE = 1
 EXIT_WINDOW = 51
-loss_re = np.zeros((args.NUM_RESTARTS, BATCH_SIZE))
-recons_re = np.zeros((args.NUM_RESTARTS, BATCH_SIZE, args.NUM_CHANNELS, \
-                    args.IMG_SIZE, args.IMG_SIZE))
+loss_re, recons_re = utils.init_output_arrays(args)
 
 def dip_estimator(args):
     def estimator(A_val, y_batch_val, args):
@@ -29,10 +27,10 @@ def dip_estimator(args):
 
         for j in range(args.NUM_RESTARTS):
             
-            net = utils.init_dcgan(args) # init DCGAN based on dataset
+            net = utils.init_dcgan(args)
 
             z = torch.zeros(BATCH_SIZE*args.Z_DIM).type(dtype).view(BATCH_SIZE,args.Z_DIM,1,1)
-            z.data.normal_().type(dtype) #init z
+            z.data.normal_().type(dtype) #init random input seed
             if CUDA:
                 net.cuda() # cast network to GPU if available
             
@@ -44,12 +42,12 @@ def dip_estimator(args):
 
                 optim.zero_grad()
 
-                # calculate loss || y - A*G(z) ||
+                # calculate measurement loss || y - A*G(z) ||
                 G = net(z)
                 AG = torch.matmul(G.view(BATCH_SIZE,-1),A) # A*G(z)
                 y_loss = torch.mean(torch.sum(se(AG,y),dim=1))
 
-                # calculate TV loss 
+                # calculate total variation loss 
                 tv_loss = (torch.sum(torch.abs(G[:,:,:,:-1] - G[:,:,:,1:]))\
                             + torch.sum(torch.abs(G[:,:,:-1,:] - G[:,:,1:,:]))) 
 
@@ -57,7 +55,6 @@ def dip_estimator(args):
                 layers = net.parameters()
                 layer_means = torch.cat([layer.mean().view(1) for layer in layers])
                 lr_loss = torch.matmul(layer_means-mu,torch.matmul(sig_inv,layer_means-mu))
-                # lr_loss = lrc * utils.learned_reg_loss(net.parameters(), mu, sig_inv)
                 
                 total_loss = y_loss + lrc*lr_loss + tvc*tv_loss # total loss for iteration i
                  
