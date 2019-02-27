@@ -46,7 +46,7 @@ MNIST at 75 measurements                 | X-ray at 2000 measurements
 
 2. To generate reconstruction data according to user-specified parameters, add command line arguments according to those available ```parser.py```. Example:
 	```shell
-	$ python comp_sensing.py --DATASET xray --NUM_MEASUREMENTS 2000 4000 8000 --ALG csdip bm3d
+	$ python comp_sensing.py --DATASET xray --NUM_MEASUREMENTS 2000 4000 8000 --ALG csdip dct
 	```
 
 ### Running CS-DIP on a new dataset

@@ -48,9 +48,8 @@ def lasso_dct_estimator(args):  #pylint: disable = W0613
         # One can prove that taking 2D DCT of each row of A,
         # then solving usual LASSO, and finally taking 2D ICT gives the correct answer.
         A_new = copy.deepcopy(A_val)
-    for i in range(A_val.shape[1]):
+        for i in range(A_val.shape[1]):
             A_new[:, i] = vec([dct2(channel) for channel in devec(A_new[:, i],args.NUM_CHANNELS)],args.NUM_CHANNELS)
-
         y_val = y_batch_val[0]
         z_hat = solve_lasso(A_new, y_val, LMBD)
         x_hat = vec([idct2(channel) for channel in devec(z_hat,args.NUM_CHANNELS)],args.NUM_CHANNELS).T
