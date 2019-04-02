@@ -25,6 +25,7 @@ for num_meas in NUM_MEASUREMENTS_LIST:
     
     # init measurement matrix
     A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
+    y = np.dot(x,A)
 
     for _, (batch, _, im_path) in enumerate(dataloader):
 
