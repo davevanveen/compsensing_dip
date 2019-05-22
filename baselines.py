@@ -75,5 +75,4 @@ def lasso_wavelet_estimator(args):  #pylint: disable = W0613
     return estimator
 
 def get_A(dimension,num_measurements):
-    # np.random.seed(1) # set random seed value to get same A -- only use when tuning hparams
     return np.sqrt(1.0/num_measurements)*np.random.randn(dimension,num_measurements)

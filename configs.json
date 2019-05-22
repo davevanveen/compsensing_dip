@@ -14,14 +14,14 @@
 		"num_channels": 1,
 		"num_measurements": 1000,
 		"z_dim": 64,
-		"num_restarts": 5,
+		"num_restarts": 1,
     	"lr_folder": "./learned_regularization/xray/"
 	},
 	"mnist": {
 		"img_size": 28,
 		"num_channels": 1,
 		"num_measurements": 100,
-		"num_restarts": 1,
+		"num_restarts": 5,
 		"z_dim": 128,
     "lr_folder": "./learned_regularization/mnist/"
 	},

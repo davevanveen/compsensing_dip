@@ -110,6 +110,7 @@ class DCGAN_RETINO(nn.Module):
 
 NGF = 64
 def init_dcgan(args):
+
     if args.DATASET == 'xray':
         net = DCGAN_XRAY(args.Z_DIM, NGF, args.IMG_SIZE,\
             args.NUM_CHANNELS, args.NUM_MEASUREMENTS)

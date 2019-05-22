@@ -98,6 +98,7 @@ def plot_mse(mse_alg, args, kwargs):
         error = np.std(mse_alg[NUM_MEASUREMENTS]) / np.sqrt(1.0*n)
         y_temp.append(mse)
         y_error.append(error)
+    # print(y_temp)
     plt.errorbar(x_temp,y_temp,y_error,**kwargs)
 
 figure_height = 5

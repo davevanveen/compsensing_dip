@@ -2,6 +2,7 @@ import numpy as np
 import pickle as pkl
 import os
 import parser
+import numpy as np
 
 import torch
 from torchvision import datasets
@@ -25,11 +26,16 @@ for num_meas in NUM_MEASUREMENTS_LIST:
     
     # init measurement matrix
     A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
-    y = np.dot(x,A)
-
+    
     for _, (batch, _, im_path) in enumerate(dataloader):
 
+        
+        eta_sig = 0 # set value to induce noise 
+        eta = np.random.normal(0, eta_sig * (1.0 / args.NUM_MEASUREMENTS) ,args.NUM_MEASUREMENTS)
+        
+
         x = batch.view(1,-1).cpu().numpy() # define image
+        y = np.dot(x,A) + eta
 
         for alg in ALG_LIST:
             args.ALG = alg
@@ -55,6 +61,6 @@ for num_meas in NUM_MEASUREMENTS_LIST:
             utils.save_reconstruction(x_hat, args, im_path)
 
 if NEW_RECONS == False:
-    print('Duplicate reconstruction configurations. No new data generated.')
+    print('Duplicate experiment configurations. No new data generated.')
 else:
     print('Reconstructions generated!')
