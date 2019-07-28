@@ -3,6 +3,6 @@ torchvision
 scipy
 scikit-learn
 matplotlib
-skimage
+scikit-image
 jupyter
 pywt
