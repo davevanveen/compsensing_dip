@@ -9,6 +9,5 @@ plot_retino.ipynb
 plot_xray.ipynb
 comp_sensing_expmt.py
 README_neurips.md
-*.jpg
 *.npy
 dataspecific_scripts
