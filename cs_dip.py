@@ -64,12 +64,14 @@ def dip_estimator(args):
                     loss_iter.append(total_loss.data.cpu().numpy())
                     if i == args.NUM_ITER - 1:
                         idx_iter = np.argmin(loss_iter)
-
+                        loss_re[j] = np.min(loss_iter)
+                        # line included above to choose restart with lowest overall total loss...
+                        # previously was getting restart with the lowest y_loss on last iter
                 total_loss.backward() # backprop
                 optim.step()
 
             recons_re[j] = recons_iter[idx_iter]       
-            loss_re[j] = y_loss.data.cpu().numpy()
+            #loss_re[j] = y_loss.data.cpu().numpy()
 
         idx_re = np.argmin(loss_re,axis=0)
         x_hat = recons_re[idx_re]
