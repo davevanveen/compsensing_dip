@@ -205,7 +205,6 @@ def get_path_out(args, path_in):
     #path_out = 'reconstructions/{0}/{1}/meas{2}/im{3}.{4}'.format( \
     #        args.DATASET, args.ALG, args.NUM_MEASUREMENTS, fn, file_ext)
 
-    
     path_out = 'reconstructions/{0}/{1}/meas{2}/eta{3}/im{4}.{5}'.format( \
         args.DATASET, args.ALG, args.NUM_MEASUREMENTS, args.NOISE, fn, file_ext)
 
