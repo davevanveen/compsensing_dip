@@ -18,16 +18,12 @@ args = parser.parse_args('configs.json')
 print(args)
 
 NUM_MEASUREMENTS_LIST, ALG_LIST = utils.convert_to_list(args)
-#NOISE_LIST = [0, 0.1, 1, 5, 10, 20, 50, 100]
-#NOISE_LIST = [0, 0.1, 1, 10, 100] # ran Wed 3a. Didn't align w Ajils, so quit
-#NOISE_LIST = [0,1,10] # shorter list, started Wed on waking up
-#NOISE_LIST = [0]
 
 # above, NOISE_LIST were all \sigma's. 
 # Now, VAR_LIST is \sigma^2; manually enter NOISE_LIST as sqrt of that to be int or 2 decimals
-#\sigma^2 = [0, 1, 10, 50, 100]
-#VAR_LIST = [0,1,10,50,100] #update as of Wed 12p
-NOISE_LIST = [0,1,3.16,7.07,10] # manually entered as sqrt of VAR_LIST
+#\sigma^2 = [0, 1, 10, 50, 100] #update as of Wed 12p 
+#NOISE_LIST = [0,1,3.16,7.07,10] # manually entered as sqrt of VAR_LIST
+NOISE_LIST = [0,0.707,1,2.24,3.16,7.07,10,22.36,31.62]
 
 dataloader = utils.get_data(args) # get dataset of images
 
@@ -40,15 +36,15 @@ for num_meas in NUM_MEASUREMENTS_LIST:
         
         for noise in NOISE_LIST:
             args.NOISE = noise # set value to induce noise
-            mmm = args.NUM_MEASUREMENTS 
+            # mmm = args.NUM_MEASUREMENTS 
             # second argument is for np.random.normal is \sigma, i.e. std devn
             # thus feed in \sigma / sqrt(m) to get variance of \sigma^2 / m
-            eta = np.random.normal(0, noise /  np.sqrt(mmm) , mmm)
+            
+            #eta = np.random.normal(0, noise /  np.sqrt(mmm) , mmm)
         
-        #for _, (batch, _, im_path) in enumerate(dataloader):	
 
             x = batch.view(1,-1).cpu().numpy() # define image
-            y = np.dot(x,A) + eta
+            #y = np.dot(x,A) + eta
 
             for alg in ALG_LIST:
                 args.ALG = alg
@@ -69,7 +65,8 @@ for num_meas in NUM_MEASUREMENTS_LIST:
                 else:
                     raise NotImplementedError
 
-                x_hat = estimator(A, y, args)
+                # x_hat = estimator(A, y, args)
+                x_hat = estimator(x, A, args)
 
                 utils.save_reconstruction(x_hat, args, im_path)
 
