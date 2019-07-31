@@ -19,7 +19,8 @@ print(args)
 
 NUM_MEASUREMENTS_LIST, ALG_LIST = utils.convert_to_list(args)
 #NOISE_LIST = [0, 0.1, 1, 5, 10, 20, 50, 100]
-NOISE_LIST = [0, 0.1, 1, 10, 100] 
+#NOISE_LIST = [0, 0.1, 1, 10, 100] # ran Wed 3a. Didn't align w Ajils, so quit
+NOISE_LIST = [0,1,10] # shorter list, started Wed on waking up
 #NOISE_LIST = [0]
 
 dataloader = utils.get_data(args) # get dataset of images
