@@ -22,17 +22,27 @@ def dip_estimator(args):
 
         y = torch.FloatTensor(y_batch_val).type(dtype) # init measurements y
         A = torch.FloatTensor(A_val).type(dtype)       # init measurement matrix A
+        mmm = args.NUM_MEASUREMENTS
 
         mu, sig_inv, tvc, lrc = utils.get_constants(args, dtype)
 
+        ## POTENTIAL TO DO: move noise instantiation inside restarts loop
+        ##                  would need to change where x_hat is saving
+        #for noise in NOISE_LIST:
+            #args.NOISE = noise
+            
         for j in range(args.NUM_RESTARTS):
+
+            #eta = np.random.normal(0, noise / np.sqrt(mmm), mmm)
+            #y_np = y_batch_val + eta
+            #y = torch.FloatTensor(y_np).type(dtype)
             
             net = utils.init_dcgan(args)
 
             z = torch.zeros(BATCH_SIZE*args.Z_DIM).type(dtype).view(BATCH_SIZE,args.Z_DIM,1,1)
             z.data.normal_().type(dtype) #init random input seed
             if CUDA:
-                net.cuda() # cast network to GPU if available
+               net.cuda() # cast network to GPU if available
             
             optim = torch.optim.RMSprop(net.parameters(),lr=0.001, momentum=0.9, weight_decay=0)
             loss_iter = []

@@ -18,7 +18,9 @@ args = parser.parse_args('configs.json')
 print(args)
 
 NUM_MEASUREMENTS_LIST, ALG_LIST = utils.convert_to_list(args)
-NOISE_LIST = [0, 0.1, 1, 5, 10, 20, 50, 100]
+#NOISE_LIST = [0, 0.1, 1, 5, 10, 20, 50, 100]
+NOISE_LIST = [0, 0.1, 1, 10, 100] 
+#NOISE_LIST = [0]
 
 dataloader = utils.get_data(args) # get dataset of images
 
@@ -27,9 +29,8 @@ for num_meas in NUM_MEASUREMENTS_LIST:
     
     # init measurement matrix
     A = baselines.get_A(args.IMG_SIZE*args.IMG_SIZE*args.NUM_CHANNELS, args.NUM_MEASUREMENTS)
-    
-    for _, (batch, _, im_path) in enumerate(dataloader):
-
+    for _, (batch, _, im_path) in enumerate(dataloader):    
+        
         for noise in NOISE_LIST:
             args.NOISE = noise # set value to induce noise
             mmm = args.NUM_MEASUREMENTS 
@@ -37,6 +38,7 @@ for num_meas in NUM_MEASUREMENTS_LIST:
             # thus feed in \sigma / sqrt(m) to get variance of \sigma^2 / m
             eta = np.random.normal(0, noise /  np.sqrt(mmm) , mmm)
         
+        #for _, (batch, _, im_path) in enumerate(dataloader):	
 
             x = batch.view(1,-1).cpu().numpy() # define image
             y = np.dot(x,A) + eta
