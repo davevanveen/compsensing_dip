@@ -20,8 +20,14 @@ print(args)
 NUM_MEASUREMENTS_LIST, ALG_LIST = utils.convert_to_list(args)
 #NOISE_LIST = [0, 0.1, 1, 5, 10, 20, 50, 100]
 #NOISE_LIST = [0, 0.1, 1, 10, 100] # ran Wed 3a. Didn't align w Ajils, so quit
-NOISE_LIST = [0,1,10] # shorter list, started Wed on waking up
+#NOISE_LIST = [0,1,10] # shorter list, started Wed on waking up
 #NOISE_LIST = [0]
+
+# above, NOISE_LIST were all \sigma's. 
+# Now, VAR_LIST is \sigma^2; manually enter NOISE_LIST as sqrt of that to be int or 2 decimals
+#\sigma^2 = [0, 1, 10, 50, 100]
+#VAR_LIST = [0,1,10,50,100] #update as of Wed 12p
+NOISE_LIST = [0,1,3.16,7.07,10] # manually entered as sqrt of VAR_LIST
 
 dataloader = utils.get_data(args) # get dataset of images
 
